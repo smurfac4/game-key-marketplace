@@ -1,0 +1,12 @@
+.git
+.DS_Store
+.env
+.env.*
+**/node_modules
+**/dist
+**/coverage
+api/bin
+ai-logs
+
+**/test-results
+**/playwright-report
