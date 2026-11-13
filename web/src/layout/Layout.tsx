@@ -1,5 +1,6 @@
 import { preferences, setPreferences } from "../content/preferences";
 import { useQueryClient } from "@tanstack/react-query";
+import { LanguageFlag } from "../components/LanguageFlag";
 import { Categories } from "../components/Categories";
 import { Icon } from "../components/Icon";
 import { useState } from "react";
@@ -73,7 +74,7 @@ export function Layout() {
             <SearchBox />
           </div>
           <div className="order-4 col-span-2 flex items-center justify-end gap-3 text-xs lg:order-none lg:col-span-1">
-            <Icon name="globe" width="18" />
+            <LanguageFlag language={settings.language} />
             <label className="sr-only" htmlFor="language">
               Language
             </label>

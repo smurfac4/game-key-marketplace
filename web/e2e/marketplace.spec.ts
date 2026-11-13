@@ -470,13 +470,22 @@ test("language selector persists and real GBP checkout", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Store", exact: true }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: "English language flag", exact: true }),
+  ).toBeVisible();
   await page.getByLabel("Language", { exact: true }).selectOption("ru");
+  await expect(
+    page.getByRole("img", { name: "Russian language flag", exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Магазин", exact: true }),
   ).toBeVisible();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "ru");
   await expect(page.getByLabel("Language", { exact: true })).toHaveValue("ru");
+  await expect(
+    page.getByRole("img", { name: "Russian language flag", exact: true }),
+  ).toBeVisible();
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Твоя следующая игровая вселенная",
@@ -487,6 +496,9 @@ test("language selector persists and real GBP checkout", async ({ page }) => {
   ).toBeVisible();
   await page.goto("/store");
   await page.getByLabel("Language", { exact: true }).selectOption("en");
+  await expect(
+    page.getByRole("img", { name: "English language flag", exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Store", exact: true }),
   ).toBeVisible();
