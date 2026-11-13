@@ -1,5 +1,7 @@
 # Game-key marketplace
 
+Public repository: [smurfac4/game-key-marketplace](https://github.com/smurfac4/game-key-marketplace).
+
 An intern-assignment marketplace with a PostgreSQL catalog, independent homepage blocks, typo-tolerant search, cookie authentication, carts, transactional mock checkout, and private digital-key orders.
 
 - `web/`: React, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query.
@@ -390,3 +392,9 @@ English is the default language. The header offers English/Russian switching and
 The UI sends `X-Display-Currency` for catalog/cart reads; direct API consumers can use that header to request conversion, or omit it to retain original inventory-currency filtering. Checkout JSON now also accepts `currency` (EUR/USD/GBP, default EUR). Client prices are still rejected. Original vector illustrations can be regenerated with `python3 scripts/generate-demo-art.py`.
 
 The latest visual revision uses three original generated genre cover illustrations without DEMO markings and an original portal promotion background. These are author illustrations, not official publisher covers. Promotion headlines follow the selected English/Russian language; select chevrons have a consistent inset. `scripts/generate-demo-art.py` regenerates only the earlier SVG fallback illustrations, not the primary generated PNG files (which are included in source).
+
+## Repository history
+
+The project existed as workspace files before Git commits were recorded. The initial repository history is an honest grouped import of that existing source: configuration, schema/seed, catalog/home modules, auth/commerce API, frontend, then tests/audit documentation. Those import commits use their actual creation timestamps and the configured project owner's Git identity; they are not historical records of the earlier development sessions. Subsequent changes are committed separately on `main`.
+
+Clone the public repository with `git clone https://github.com/smurfac4/game-key-marketplace.git`, enter the directory, then follow Run with Docker above. Local `.env`, dependencies, builds and test artifacts remain ignored and are not published.
