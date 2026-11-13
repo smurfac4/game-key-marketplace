@@ -128,7 +128,6 @@ test("register, cart quantity, declined payment rollback, checkout, keys, orders
     path: "test-results/order-desktop.png",
     fullPage: true,
   });
-  // A different authenticated buyer cannot retrieve the purchased keys (IDOR).
   const other = await browser.newContext({
     baseURL: new URL(page.url()).origin,
   });
@@ -240,7 +239,6 @@ test("mobile filters, modal focus, empty and 404 states", async ({ page }) => {
   await page.goto("/products/no-such-product");
   await expect(page.getByText("This game could not be found.")).toBeVisible();
 });
-
 test("showcase artwork, live categories and featured purchase", async ({
   page,
 }) => {
@@ -331,7 +329,6 @@ test("showcase artwork, live categories and featured purchase", async ({
     fullPage: true,
   });
 });
-
 test("catalog network failures show retry controls", async ({ page }) => {
   for (const failure of ["500", "drop", "timeout"]) {
     await page.route("**/api/products?**", (route) =>
@@ -363,8 +360,6 @@ test("catalog network failures show retry controls", async ({ page }) => {
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("Password", { exact: true })).toBeFocused();
 });
-
-// Navigation uses Tab/Enter/typed keys only: no pointer clicks or programmatic focus.
 for (const mobile of [false, true]) {
   test(`complete keyboard purchase and HTTP idempotency ${mobile ? "mobile" : "desktop"}`, async ({
     page,
@@ -415,7 +410,12 @@ for (const mobile of [false, true]) {
     await page.keyboard.press("Enter");
     await tabTo(page.getByLabel("Test card number"));
     await page.keyboard.type("4242424242424242");
-    let captured: { body: string; token: string } | undefined;
+    let captured:
+      | {
+          body: string;
+          token: string;
+        }
+      | undefined;
     page.on("request", (request) => {
       if (
         request.url().endsWith("/api/checkout") &&
@@ -464,7 +464,6 @@ for (const mobile of [false, true]) {
       .toBe(401);
   });
 }
-
 test("language selector persists and real GBP checkout", async ({ page }) => {
   await register(page, "/store");
   await expect(
@@ -574,7 +573,6 @@ test("language selector persists and real GBP checkout", async ({ page }) => {
   expect(image.status()).toBe(200);
   expect(image.headers()["content-type"]).toContain("image/svg");
 });
-
 test("select arrows are inset and English hero uses the original raster scene", async ({
   page,
 }) => {
@@ -622,7 +620,6 @@ test("select arrows are inset and English hero uses the original raster scene", 
     fullPage: false,
   });
 });
-
 test("category menu and sidebar remain interchangeable with history and zero results", async ({
   page,
 }) => {

@@ -180,3 +180,9 @@ Category-menu links preserve other URL filters/sorting/page size and reset pagin
 ## Language flag and public Git repository — user request
 
 Added project-authored inline flag vectors beside the language selector (UK for English, Russian tricolor for Russian); flags follow the persisted language setting and have accessible names. The user explicitly authorized a public GitHub repository and commits on main. No earlier commits existed, so the existing source was imported in focused current-date commits under the configured owner's identity; no historical timestamps or prior development history were fabricated. Local files are retained; ignored secrets/configuration, generated dependencies and test artifacts are excluded from publication rather than deleted. A limited credential-pattern scan of publishable files returned no findings; this is not a claim of a full gitleaks scan.
+
+## Comment removal and reconstructed commit timeline — user request
+
+Removed prose comments from tracked source and configuration, including Python docstrings and shell comments inside README command blocks. Required go:embed directives and executable-script shebangs remain. Optional-browser-storage catches intentionally stay empty; ESLint now explicitly allows empty catch blocks without requiring explanatory comments. Tests and application behavior are retained. Local .env was not read or changed.
+
+The user authorized replacing the public main history with clearer commit titles and assigned past dates. A local backup ref preserves the pre-rewrite history. The reconstructed stage timeline uses 13 November 2026 and the owner's existing Git identity; each rewritten commit records that it is a reconstructed snapshot. This supersedes earlier statements that initial commit timestamps were unchanged. No claim is made that the assigned times are an authentic record of past development.

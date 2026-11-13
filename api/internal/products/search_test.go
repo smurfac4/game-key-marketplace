@@ -37,7 +37,7 @@ func testSearch(t *testing.T, ctx context.Context, pool *pgxpool.Pool) {
 	for i, name := range names {
 		var id int64
 		err := pool.QueryRow(ctx, `INSERT INTO products(name,slug,platform,region,genre,image_url) VALUES ($1,$2,'Steam','Global','RPG','https://example.invalid/search') RETURNING id`, name, fmt.Sprintf("search-%d", i)).Scan(&id)
-		// Slugs are independent from names and must satisfy the schema's URL-safe constraint.
+
 		if err != nil {
 			t.Fatal(err)
 		}

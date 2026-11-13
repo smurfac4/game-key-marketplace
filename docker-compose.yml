@@ -19,7 +19,6 @@ services:
       context: .
       dockerfile: api/Dockerfile
     environment:
-      # pgx also supports libpq environment variables, avoiding URL-escaping passwords.
       DATABASE_URL: "postgres://db:5432"
       PGUSER: ${POSTGRES_USER:?Copy .env.example to .env}
       PGPASSWORD: ${POSTGRES_PASSWORD:?Copy .env.example to .env}

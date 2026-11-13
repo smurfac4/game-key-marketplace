@@ -70,7 +70,7 @@ func testDetail(t *testing.T, ctx context.Context, pool *pgxpool.Pool) {
 			t.Fatalf("%q expected not found, got %v", slug, err)
 		}
 	}
-	// Seller values must come from the database, not static response defaults.
+
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -103,7 +103,7 @@ func testSimilarLimit(t *testing.T, ctx context.Context, pool *pgxpool.Pool) {
 			t.Fatal("unavailable/self recommendation")
 		}
 	}
-	// No same-genre candidates must produce an empty array, not null.
+
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		t.Fatal(err)

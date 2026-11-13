@@ -101,7 +101,6 @@ func lockCart(ctx context.Context, tx pgx.Tx, user int64) (int64, error) {
 	return id, err
 }
 
-// All cart mutations and checkout lock the same cart row. Inventory is not reserved by a cart.
 func (r Repository) SetItem(ctx context.Context, user, offer int64, quantity int, add bool) error {
 	if user <= 0 || offer <= 0 || quantity < 1 || quantity > 10 {
 		return ErrInvalid
@@ -219,7 +218,7 @@ func (r Repository) Checkout(ctx context.Context, user int64, token, card string
 	if !errors.Is(err, pgx.ErrNoRows) {
 		return 0, err
 	}
-	// Lock offers in a global order: concurrent multi-offer checkouts cannot deadlock by lock inversion.
+
 	rows, err := tx.Query(ctx, `SELECT o.id,ci.quantity,o.stock,(coalesce(o.discount_price,o.price)*100)::bigint,o.currency,p.name,s.name
  FROM cart_items ci JOIN offers o ON o.id=ci.offer_id JOIN products p ON p.id=o.product_id JOIN sellers s ON s.id=o.seller_id
  WHERE ci.cart_id=$1 ORDER BY o.id FOR UPDATE OF o`, cart)
@@ -311,8 +310,7 @@ func (r Repository) Checkout(ctx context.Context, user int64, token, card string
 			return 0, err
 		}
 	}
-	// Only a side-effect-free mock is permitted here. A real provider requires an outbox/saga,
-	// provider idempotency and compensation; a DB rollback cannot refund a real charge.
+
 	if r.Payments == nil {
 		return 0, errors.New("payment provider not configured")
 	}
@@ -331,7 +329,6 @@ func (r Repository) Checkout(ctx context.Context, user int64, token, card string
 	return orderID, nil
 }
 
-// Every key-bearing query is scoped by authenticated user ID, never a client-supplied owner.
 const orderJSON = `json_build_object('id',o.id,'status',o.status,'currency',o.currency,'total',o.total_amount::text,'created_at',o.created_at,
  'items',coalesce((SELECT json_agg(json_build_object('id',oi.id,'product_name',oi.product_name,'seller_name',oi.seller_name,'quantity',oi.quantity,'unit_price',oi.unit_price::text,'currency',oi.currency,
  'keys',coalesce((SELECT json_agg(k.key_value ORDER BY k.id) FROM game_keys k WHERE k.order_item_id=oi.id AND k.status='sold'),'[]'::json)) ORDER BY oi.id) FROM order_items oi WHERE oi.order_id=o.id),'[]'::json))`

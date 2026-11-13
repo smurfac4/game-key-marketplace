@@ -12,8 +12,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// Operators can use the GIN index; similarity() alone in WHERE cannot.
-// Word matching rescues a typo in one word of a long game title.
 const searchPredicate = `($5::text='' OR p.name ILIKE $11 ESCAPE '\' OR
  (char_length($5)>=4 AND (p.name % $5 OR p.name %> $5)))`
 const searchTier = `CASE WHEN lower(p.name)=lower($5) THEN 0
@@ -26,8 +24,6 @@ func searchPatterns(search string) (string, string) {
 	return "%" + escaped + "%", escaped + "%"
 }
 
-// Transaction-local settings avoid leaking thresholds into pooled connections,
-// and make results independent of database/role defaults.
 func (r Repository) searchRow(ctx context.Context, sql string, args ...any) ([]byte, error) {
 	tx, err := r.DB.Begin(ctx)
 	if err != nil {
@@ -75,7 +71,7 @@ func ParseSuggest(raw string) (Query, error) {
 }
 func (r Repository) Suggest(ctx context.Context, q Query) (Suggestions, error) {
 	result := Suggestions{Data: []Suggestion{}}
-	// One-character input has no selective trigrams; avoid querying on each first keystroke.
+
 	if utf8.RuneCountInString(q.Search) < 2 {
 		return result, nil
 	}

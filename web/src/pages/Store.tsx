@@ -14,7 +14,6 @@ import {
   ProductCard,
 } from "../components/ui";
 import { copy, valueLabel } from "../content/copy";
-
 type FacetField = "platform" | "region" | "genre";
 function FacetSelect({
   field,
@@ -77,8 +76,6 @@ export function Store() {
     if (!("page" in values)) next.delete("page");
     if ("q" in values && !values.q && next.get("sort") === "relevance")
       next.delete("sort");
-    // Commit the applied draft before another navigation can cancel its transition.
-    // Otherwise Back can reactivate the previous URL with the submitted draft.
     setParams(next, { flushSync: true });
   }
   function apply(e: FormEvent<HTMLFormElement>) {

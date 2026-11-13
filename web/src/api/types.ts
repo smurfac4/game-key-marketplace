@@ -1,4 +1,8 @@
-export type User = { id: number; email: string; created_at: string };
+export type User = {
+  id: number;
+  email: string;
+  created_at: string;
+};
 export type Product = {
   id: number;
   name: string;
@@ -14,7 +18,10 @@ export type Product = {
   original_price?: string | null;
   fuzzy_match?: boolean;
 };
-export type Facet = { value: string; count: number };
+export type Facet = {
+  value: string;
+  count: number;
+};
 export type Listing = {
   data: Product[];
   pagination: {
@@ -23,11 +30,19 @@ export type Listing = {
     total: number;
     total_pages: number;
   };
-  facets: { platform: Facet[]; region: Facet[]; genre: Facet[] };
+  facets: {
+    platform: Facet[];
+    region: Facet[];
+    genre: Facet[];
+  };
 };
 export type Offer = {
   id: number;
-  seller: { id: number; name: string; rating: number };
+  seller: {
+    id: number;
+    name: string;
+    rating: number;
+  };
   price: string;
   discount_price: string | null;
   effective_price: string;
@@ -54,7 +69,11 @@ export type CartItem = {
   total: string;
   currency: string;
 };
-export type Cart = { items: CartItem[]; total: string; currency: string };
+export type Cart = {
+  items: CartItem[];
+  total: string;
+  currency: string;
+};
 export type OrderItem = {
   id: number;
   product_name: string;
@@ -84,5 +103,8 @@ export type Banner = {
   image_url: string;
   link_url: string;
 };
-export type Block<T> = { title: string; data: T[] };
+export type Block<T> = {
+  title: string;
+  data: T[];
+};
 export type Suggestion = Pick<Product, "id" | "name" | "slug" | "image_url">;

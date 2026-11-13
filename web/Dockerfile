@@ -6,5 +6,4 @@ RUN npm ci
 COPY web ./web
 RUN npm run build
 EXPOSE 5173
-# Development server; production hosting is outside the scaffold's scope.
 CMD ["npm", "run", "dev"]

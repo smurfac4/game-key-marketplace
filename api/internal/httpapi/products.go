@@ -50,7 +50,7 @@ func listProducts(store ProductLister) http.HandlerFunc {
 		defer cancel()
 		result, err := store.List(ctx, q)
 		if err != nil {
-			// Keep database details out of responses; correlate server logs by request ID.
+
 			slog.Error("list products failed", "request_id", middleware.GetReqID(r.Context()), "error", err)
 			if errors.Is(ctx.Err(), context.DeadlineExceeded) || errors.Is(err, context.DeadlineExceeded) {
 				writeError(w, 504, "timeout", "request timed out", "")

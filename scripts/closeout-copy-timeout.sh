@@ -5,7 +5,6 @@ cleanup(){ docker compose exec -T db dropdb -U marketplace --if-exists eneba_clo
 trap cleanup EXIT
 docker compose exec -T db createdb -U marketplace eneba_closeout_copy_test
 docker compose exec -T db createdb -U marketplace eneba_closeout_timeout_test
-# Pipe the copy directly; no dump file or row data is printed or retained.
 docker compose exec -T db pg_dump -U marketplace -d marketplace -Fc | docker compose exec -T db pg_restore -U marketplace -d eneba_closeout_copy_test --exit-on-error
 export DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_closeout_copy_test?sslmode=disable'
 export GOMODCACHE=/private/tmp/eneba-go-mod GOCACHE=/private/tmp/eneba-go-cache

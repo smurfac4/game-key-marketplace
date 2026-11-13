@@ -39,12 +39,11 @@ export function SearchBox() {
   const query = useQuery({
     queryKey: ["suggest", debounced],
     queryFn: ({ signal }) =>
-      api<{ data: Suggestion[] }>(
-        `/search/suggest?q=${encodeURIComponent(debounced)}`,
-        { signal },
-      ),
+      api<{
+        data: Suggestion[];
+      }>(`/search/suggest?q=${encodeURIComponent(debounced)}`, { signal }),
     enabled: debounced.length >= 2,
-    staleTime: 30_000,
+    staleTime: 30000,
     retry: false,
   });
   const suggestions = debounced === text.trim() ? (query.data?.data ?? []) : [];
@@ -60,9 +59,7 @@ export function SearchBox() {
     setRecent(next);
     try {
       localStorage.setItem(storageKey, JSON.stringify(next));
-    } catch {
-      /* Storage may be disabled; search still works. */
-    }
+    } catch {}
   }
   function choose(index: number) {
     const option = options[index];
@@ -151,9 +148,7 @@ export function SearchBox() {
                   setRecent([]);
                   try {
                     localStorage.removeItem(storageKey);
-                  } catch {
-                    /* Private mode. */
-                  }
+                  } catch {}
                 }}
               >
                 {copy.clearRecent}

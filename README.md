@@ -15,12 +15,8 @@ Requires Docker Engine and Compose v2.
 
 ```sh
 cp .env.example .env
-# Replace the POSTGRES_PASSWORD placeholder with your local database password.
-# Set JWT_SECRET to a freshly generated `openssl rand -hex 32` value in .env first.
-# Set AUTH_ALLOWED_ORIGINS to the actual web origin if changing WEB_PORT.
 docker compose up --build -d
 docker compose run --rm --no-deps api migrate up
-# On an empty catalog only:
 docker compose run --rm --no-deps api seed
 ```
 
@@ -157,7 +153,6 @@ Other errors use the same envelope with codes `not_found` (404), `method_not_all
 Product integration tests use their own empty database ending in `_test`, separate from seed integration tests:
 
 ```sh
-# From api/, after creating the disposable database:
 TEST_PRODUCTS_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/products_test?sslmode=disable' go test ./internal/products -count=1
 ```
 
@@ -220,7 +215,6 @@ Product detail cases run with the same `TEST_PRODUCTS_DATABASE_URL` integration 
 Generate a signing secret into the ignored `.env` before Compose starts (do this once; changing it invalidates existing logins):
 
 ```sh
-# Replace the empty JWT_SECRET line in .env with this command's output:
 openssl rand -hex 32
 ```
 
@@ -264,7 +258,6 @@ The limiter uses the socket peer IP, never arbitrary forwarded headers. Behind V
 Run real HTTP/database auth tests against a separate empty disposable database:
 
 ```sh
-# From api/:
 TEST_AUTH_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/auth_test?sslmode=disable' go test ./internal/httpapi -count=1
 go test -race ./internal/auth ./internal/httpapi
 ```
@@ -299,7 +292,6 @@ This adds 3 banners, 4 block definitions, and 12 paid orders (24 allocated fake 
 Each block has its own Go package, repository, and handler under `api/internal/home/`. `DECISIONS.md` explains why the deployment is a modular monolith and how to extract a block into an independent service with an event-fed read model.
 
 ```sh
-# From api/, using a separate empty disposable *_test database:
 TEST_HOME_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/home_test?sslmode=disable' go test ./internal/home/... -count=1
 ```
 
@@ -395,6 +387,6 @@ The latest visual revision uses three original generated genre cover illustratio
 
 ## Repository history
 
-The project existed as workspace files before Git commits were recorded. The initial repository history is an honest grouped import of that existing source: configuration, schema/seed, catalog/home modules, auth/commerce API, frontend, then tests/audit documentation. Those import commits use their actual creation timestamps and the configured project owner's Git identity; they are not historical records of the earlier development sessions. Subsequent changes are committed separately on `main`.
+The project existed as workspace files before Git commits were recorded. The initial repository history is an honest grouped import of that existing source: configuration, schema/seed, catalog/home modules, auth/commerce API, frontend, then tests/audit documentation. At the owner's request, commit titles and dates were reconstructed as a project-stage timeline for 13 November 2026 under the configured owner's Git identity. The assigned timestamps are not an original development log; reconstructed commit messages explicitly record that provenance. Subsequent development can be committed normally on `main`.
 
 Clone the public repository with `git clone https://github.com/smurfac4/game-key-marketplace.git`, enter the directory, then follow Run with Docker above. Local `.env`, dependencies, builds and test artifacts remain ignored and are not published.

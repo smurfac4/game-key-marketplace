@@ -6,7 +6,10 @@ export function useCart() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["cart", user?.id],
-    queryFn: ({ signal }) => api<{ data: Cart }>("/cart", { signal }),
+    queryFn: ({ signal }) =>
+      api<{
+        data: Cart;
+      }>("/cart", { signal }),
     enabled: !!user,
     retry: false,
   });
@@ -24,20 +27,19 @@ export function useCartAction() {
       offer: number;
       quantity?: number;
     }) =>
-      api<{ data: Cart }>(
-        method === "POST" ? "/cart/items" : `/cart/items/${offer}`,
-        {
-          method,
-          body:
-            method === "DELETE"
-              ? undefined
-              : json(
-                  method === "POST"
-                    ? { offer_id: offer, quantity }
-                    : { quantity },
-                ),
-        },
-      ),
+      api<{
+        data: Cart;
+      }>(method === "POST" ? "/cart/items" : `/cart/items/${offer}`, {
+        method,
+        body:
+          method === "DELETE"
+            ? undefined
+            : json(
+                method === "POST"
+                  ? { offer_id: offer, quantity }
+                  : { quantity },
+              ),
+      }),
     onSuccess: (result) => {
       client.setQueryData(["cart", user?.id], result);
     },

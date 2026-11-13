@@ -1,4 +1,3 @@
-// Package migrations embeds the SQL files so commands work from any directory.
 package migrations
 
 import (

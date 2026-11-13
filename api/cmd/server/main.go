@@ -36,7 +36,7 @@ func run() error {
 		return errors.New("DATABASE_URL is required")
 	}
 	pool, err := pgxpool.New(ctx, databaseURL)
-	// Do not log connection errors: driver errors can contain credentials.
+
 	if err != nil {
 		return errors.New("invalid database configuration")
 	}
@@ -69,7 +69,7 @@ func run() error {
 			return fmt.Errorf("serve HTTP: %w", err)
 		}
 	case <-ctx.Done():
-		// The signal context is cancelled; shutdown needs its own deadline.
+
 		shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		if err := server.Shutdown(shutdown); err != nil {

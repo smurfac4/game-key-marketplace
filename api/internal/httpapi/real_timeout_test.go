@@ -12,7 +12,6 @@ import (
 	"time"
 )
 
-// Real TCP HTTP request waiting for the sole occupied pgx connection: no mocked SQL/error.
 func TestRealTwelveSecondPoolTimeout(t *testing.T) {
 	url := os.Getenv("TEST_TIMEOUT_DATABASE_URL")
 	if url == "" {

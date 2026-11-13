@@ -1,4 +1,3 @@
-/** Project-authored flag vectors keep the language marker consistent across OS fonts. */
 export function LanguageFlag({ language }: { language: "en" | "ru" }) {
   return (
     <svg

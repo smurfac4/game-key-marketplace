@@ -46,7 +46,7 @@ func applyShowcase(products []Product) {
 		}
 		p.ImageURL = "/media/games/" + art + "-v3.png"
 		p.Platform = "Steam"
-		// These titles also have PC editions on these stores. Listings remain demo inventory.
+
 		if i >= 50 && (g.AppID == 1091500 || g.AppID == 292030 || g.AppID == 413150 || g.AppID == 367520 || g.AppID == 250900 || g.AppID == 391540 || g.AppID == 427520) {
 			p.Platform = "GOG"
 		}
@@ -58,7 +58,6 @@ func applyShowcase(products []Product) {
 	}
 }
 
-// RunShowcase refreshes presentation only; purchases, stock, keys and cart references survive.
 func RunShowcase(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
 	tx, err := pool.Begin(ctx)
 	if err != nil {
@@ -85,7 +84,7 @@ func RunShowcase(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
 			return Counts{}, err
 		}
 	}
-	// Only seeded banners are eligible; custom/editorial banners remain untouched.
+
 	for i := range []int{1091500, 1245620, 1174180} {
 		if _, err = tx.Exec(ctx, `UPDATE banners SET image_url=$1 WHERE position=$2 AND title=$3 AND (image_url LIKE 'https://placehold.co/%' OR image_url LIKE '/media/banners/%') AND EXISTS(SELECT 1 FROM homepage_blocks WHERE slug='banners' AND config->>'seed'='homepage-v1')`, "/media/banners/portal-v2.png", i, strings.Split("Discover your next adventure|Explore this week's deals|Favorites from our players", "|")[i]); err != nil {
 			return Counts{}, err

@@ -5,7 +5,7 @@ function useBlock<T>(slug: string) {
   return useQuery({
     queryKey: ["home", slug],
     queryFn: ({ signal }) => api<Block<T>>(`/home/${slug}`, { signal }),
-    staleTime: 60_000,
+    staleTime: 60000,
     retry: 1,
   });
 }

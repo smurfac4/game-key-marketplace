@@ -31,8 +31,6 @@ func CurrentUser(ctx context.Context) (auth.User, bool) {
 	return u, ok
 }
 
-// Browser writes must pass both an explicit-origin policy and a non-simple header.
-// Browsers cannot attach this header cross-origin without an allowed preflight.
 func (a *Auth) BrowserSecurity(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
@@ -95,7 +93,7 @@ func (a *Auth) ProtectCommerce(next http.Handler) http.Handler {
 	})
 }
 func (a *Auth) limited(w http.ResponseWriter, r *http.Request) bool {
-	// Do not trust X-Forwarded-For from arbitrary clients. RealIP middleware is disabled.
+
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
 		ip = r.RemoteAddr

@@ -58,7 +58,9 @@ export function OrderPage() {
   const q = useQuery({
     queryKey: ["order", user?.id, id],
     queryFn: ({ signal }) =>
-      api<{ data: Order }>(`/orders/${encodeURIComponent(id!)}`, { signal }),
+      api<{
+        data: Order;
+      }>(`/orders/${encodeURIComponent(id!)}`, { signal }),
     retry: false,
   });
   if (q.isPending)

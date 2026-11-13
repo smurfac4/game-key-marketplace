@@ -1,4 +1,3 @@
-// Package money defines fixed illustrative demo rates, not live FX quotes.
 package money
 
 import (
@@ -38,8 +37,6 @@ func Value(s, from, to string) string {
 	return Text(Convert(n, from, to))
 }
 
-// Reprice before MIN, price filters and ordering. The placeholder is the existing
-// bound currency parameter; identifiers/operators are fixed server-owned SQL.
 func OffersSQL(query string) string {
 	rate := `(CASE $1 WHEN 'EUR' THEN 100 WHEN 'USD' THEN 110 WHEN 'GBP' THEN 85 END)`
 	source := `(CASE currency WHEN 'EUR' THEN 100 WHEN 'USD' THEN 110 WHEN 'GBP' THEN 85 END)`

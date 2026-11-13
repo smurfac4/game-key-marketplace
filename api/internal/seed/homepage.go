@@ -8,7 +8,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// RunHomepage adds demo homepage fixtures to the existing demo catalog without resetting it.
 func RunHomepage(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
 	tx, err := pool.Begin(ctx)
 	if err != nil {
@@ -71,7 +70,7 @@ func addHomepage(ctx context.Context, tx pgx.Tx) (Counts, error) {
 			return Counts{}, err
 		}
 	}
-	// This account cannot authenticate: deliberately not a valid bcrypt hash.
+
 	var userID int64
 	if err := tx.QueryRow(ctx, `INSERT INTO users(email,password_hash) VALUES ('homepage-sales@example.invalid','disabled-demo-account') RETURNING id`).Scan(&userID); err != nil {
 		return Counts{}, err

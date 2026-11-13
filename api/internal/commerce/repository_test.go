@@ -99,7 +99,7 @@ func TestCommerceIntegration(t *testing.T) {
 	if other, err := repo.GetCart(ctx, 2); err != nil || len(other.Items) != 0 {
 		t.Fatal("cart isolation", other, err)
 	}
-	// Provider failure must roll back every mutation, including allocation and stock.
+
 	for _, card := range []string{"4000000000000002", "123"} {
 		if _, err := repo.Checkout(ctx, 1, "failure-token-123456", card); err == nil {
 			t.Fatal("expected payment failure")
@@ -109,7 +109,7 @@ func TestCommerceIntegration(t *testing.T) {
 	if err := pool.QueryRow(ctx, `SELECT (SELECT count(*) FROM orders)=0 AND (SELECT count(*) FROM order_items)=0 AND (SELECT count(*) FROM game_keys WHERE status='sold')=0 AND (SELECT stock FROM offers WHERE id=2)=3 AND (SELECT count(*) FROM cart_items)=1`).Scan(&unchanged); err != nil || !unchanged {
 		t.Fatal("rollback incomplete", err)
 	}
-	// A locked key is skipped, not allocated twice or waited on.
+
 	if err := repo.RemoveItem(ctx, 1, 2); err != nil {
 		t.Fatal(err)
 	}
@@ -188,8 +188,7 @@ func TestCommerceIntegration(t *testing.T) {
 	if _, err := repo.Checkout(ctx, winner.user, token, "4000000000000002"); !errors.Is(err, ErrIdempotency) {
 		t.Fatal("different request must conflict")
 	}
-	// Simulate losing the HTTP response after the order has committed. POST
-	// transport retries must resolve the durable token, not allocate another key.
+
 	var dropReply atomic.Bool
 	dropReply.Store(true)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

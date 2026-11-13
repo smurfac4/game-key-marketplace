@@ -15,7 +15,6 @@ export TEST_COMMERCE_DATABASE_URL='postgres://marketplace:local-development-only
 export DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_meta_test?sslmode=disable'
 /private/tmp/eneba-audit-migrate up
 /private/tmp/eneba-audit-seed
-# Leave a pending migration on populated tables before starting both migrators.
 /private/tmp/eneba-audit-migrate down
 /private/tmp/eneba-audit-migrate up & a=$!
 /private/tmp/eneba-audit-migrate up & b=$!

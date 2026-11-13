@@ -37,7 +37,9 @@ function PaymentForm({
   const [token] = useState(() => paymentToken(fingerprint));
   const action = useMutation({
     mutationFn: (card: string) =>
-      api<{ data: Order }>("/checkout", {
+      api<{
+        data: Order;
+      }>("/checkout", {
         method: "POST",
         headers: { "Idempotency-Key": token },
         body: json({ currency: cart.currency, card_number: card }),
@@ -49,9 +51,7 @@ function PaymentForm({
       void client.invalidateQueries({ queryKey: ["home"] });
       try {
         sessionStorage.removeItem(`checkout:${fingerprint}`);
-      } catch {
-        /* Storage may be unavailable. */
-      }
+      } catch {}
       navigate(`/orders/${result.data.id}?confirmed=1`, { replace: true });
     },
     onError: () => {

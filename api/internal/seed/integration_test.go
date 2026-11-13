@@ -11,7 +11,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// This test owns a disposable database, never the developer's application data.
 func TestDatabaseIntegration(t *testing.T) {
 	url := os.Getenv("TEST_DATABASE_URL")
 	if url == "" {
@@ -61,7 +60,7 @@ func TestDatabaseIntegration(t *testing.T) {
 	if err = migrations.Run(url, "up"); err != nil {
 		t.Fatal("second up:", err)
 	}
-	// Fail after sellers, products, and an offer have been inserted to prove atomicity.
+
 	if _, err = pool.Exec(ctx, `CREATE FUNCTION reject_seed_key() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'intentional seed failure'; END $$; CREATE TRIGGER reject_seed_key BEFORE INSERT ON game_keys FOR EACH ROW EXECUTE FUNCTION reject_seed_key()`); err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +87,7 @@ func TestDatabaseIntegration(t *testing.T) {
 	if again, err := RunHomepage(ctx, pool); err != nil || again.Banners != 0 || again.Orders != 0 {
 		t.Fatal("homepage seed must be idempotent", again, err)
 	}
-	// Presentation refresh must be repeat-safe and must not change purchases or stock.
+
 	for i := 0; i < 2; i++ {
 		if _, err = RunShowcase(ctx, pool); err != nil {
 			t.Fatal("showcase refresh", err)

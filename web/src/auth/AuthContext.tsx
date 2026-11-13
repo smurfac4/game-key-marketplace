@@ -4,7 +4,6 @@ import { Navigate, useLocation } from "react-router-dom";
 import { api, ApiError, json } from "../api/client";
 import type { User } from "../api/types";
 import { Skeleton, ErrorState } from "../components/ui";
-
 type AuthValue = {
   user: User | null | undefined;
   pending: boolean;
@@ -19,17 +18,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ["me"],
     queryFn: async ({ signal }) => {
       try {
-        return (await api<{ data: User }>("/me", { signal })).data;
+        return (
+          await api<{
+            data: User;
+          }>("/me", { signal })
+        ).data;
       } catch (e) {
         if (e instanceof ApiError && e.status === 401) return null;
         throw e;
       }
     },
     retry: false,
-    staleTime: 30_000,
+    staleTime: 30000,
   });
   async function signIn(email: string, password: string) {
-    const result = await api<{ data: User }>("/auth/login", {
+    const result = await api<{
+      data: User;
+    }>("/auth/login", {
       method: "POST",
       body: json({ email, password }),
     });

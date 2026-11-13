@@ -64,8 +64,6 @@ func (r Repository) Detail(ctx context.Context, slug string) (DetailResponse, er
 	return result, nil
 }
 
-// One statement keeps the product, offers and recommendations in one snapshot.
-// Explicit fields prevent inventory key values from ever entering the response.
 const detailSQL = `
 WITH target AS (
  SELECT id,name,slug,description,platform,region,genre,image_url,release_date

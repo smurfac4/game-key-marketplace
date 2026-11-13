@@ -93,7 +93,6 @@ CREATE TABLE game_keys (
     status text NOT NULL DEFAULT 'available' CHECK (status IN ('available', 'sold')),
     order_item_id bigint,
     created_at timestamptz NOT NULL DEFAULT now(),
-    -- An allocated key must belong to the exact offer purchased by the order item.
     FOREIGN KEY (order_item_id, offer_id) REFERENCES order_items(id, offer_id) ON DELETE RESTRICT,
     CHECK ((status = 'available' AND order_item_id IS NULL) OR
            (status = 'sold' AND order_item_id IS NOT NULL))

@@ -1,5 +1,4 @@
 BEGIN;
--- JWT IDs are random session handles. Revocation makes logout invalidate replay.
 CREATE TABLE auth_sessions (
     id text PRIMARY KEY,
     user_id bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,

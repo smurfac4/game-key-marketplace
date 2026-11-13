@@ -52,7 +52,7 @@ type Service struct {
 }
 
 func New(store Store, config Config) (*Service, error) {
-	// One dummy comparison keeps unknown emails on the same expensive path as bad passwords.
+
 	hash, err := bcrypt.GenerateFromPassword([]byte("not-a-real-account-password"), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err

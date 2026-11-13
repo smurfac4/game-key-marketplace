@@ -24,8 +24,6 @@ func NewWindowLimiter(limit int, window time.Duration) *Limiter {
 	return &Limiter{entries: map[string]bucket{}, now: time.Now, limit: limit, window: window}
 }
 
-// A bounded per-process fixed window: 10 attempts per peer IP per 15 minutes.
-// Reject new keys at capacity instead of evicting live limits attackers could bypass.
 func (l *Limiter) Allow(key string) (bool, time.Duration) {
 	l.mu.Lock()
 	defer l.mu.Unlock()

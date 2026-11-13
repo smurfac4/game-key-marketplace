@@ -191,7 +191,7 @@ func TestAuthIntegration(t *testing.T) {
 			t.Fatal("limiter bypassed", rr.Code)
 		}
 	}
-	// Persisted expiry and deleted-user checks complement JWT expiration validation.
+
 	login = request("POST", "/api/auth/login", credentials, "192.0.2.3", nil)
 	cookie = login.Result().Cookies()[0]
 	if _, err = pool.Exec(ctx, "UPDATE auth_sessions SET expires_at=now()-interval '1 second'"); err != nil {

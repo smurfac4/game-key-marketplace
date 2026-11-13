@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Original project-native SVG illustrations. No external artwork or franchise marks."""
+
 from pathlib import Path
 import json,random,html,textwrap
 root=Path(__file__).resolve().parents[1]

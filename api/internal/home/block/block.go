@@ -1,4 +1,3 @@
-// Package block contains only shared homepage transport plumbing, not block queries.
 package block
 
 import (

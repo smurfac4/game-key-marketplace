@@ -1,4 +1,3 @@
-# Dedicated disposable project; never use this override with the development project name.
 services:
   api:
     image: eneba-api

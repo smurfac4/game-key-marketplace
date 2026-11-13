@@ -14,7 +14,9 @@ const paths: Record<string, string> = {
 export function Icon({
   name = "game",
   ...props
-}: SVGProps<SVGSVGElement> & { name?: string }) {
+}: SVGProps<SVGSVGElement> & {
+  name?: string;
+}) {
   return (
     <svg
       aria-hidden="true"

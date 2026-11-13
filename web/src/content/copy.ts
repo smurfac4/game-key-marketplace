@@ -1,5 +1,4 @@
 import { preferences } from "./preferences";
-// Interface/localization copy only. Products, offers, banners, and homepage titles are API-owned.
 const english = {
   demoFx: "Demo FX",
   fxHelp:
@@ -148,7 +147,6 @@ const english = {
   returnHome: "Return home",
   releaseDate: "Release date",
 } as const;
-
 const russian = {
   home: "Главная",
   store: "Магазин",

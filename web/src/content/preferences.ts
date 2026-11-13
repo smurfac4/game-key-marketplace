@@ -15,10 +15,7 @@ try {
       currency: saved.currency,
     };
   localStorage.setItem("keyspace-preferences", JSON.stringify(current));
-} catch {
-  /* Storage may be blocked. */
-}
-// Shared catalog URLs carry the selected currency into a new browser session.
+} catch {}
 const urlCurrency = new URLSearchParams(location.search).get("currency");
 if (urlCurrency && ["EUR", "USD", "GBP"].includes(urlCurrency))
   current = { ...current, currency: urlCurrency as Preferences["currency"] };
@@ -29,9 +26,7 @@ export function setPreferences(next: Preferences) {
   current = next;
   try {
     localStorage.setItem("keyspace-preferences", JSON.stringify(next));
-  } catch {
-    /* Session-only settings still work. */
-  }
+  } catch {}
   document.documentElement.lang = next.language;
   listeners.forEach((fn) => fn());
 }

@@ -1,4 +1,3 @@
-// Package seed creates deterministic, fictional development inventory only.
 package seed
 
 import (
@@ -23,7 +22,6 @@ type Product struct {
 }
 type Counts struct{ Products, Sellers, Offers, Keys, Banners, Orders int }
 
-// Money is generated as integer cents and sent as decimal text, never float64.
 func money(cents int) string { return fmt.Sprintf("%d.%02d", cents/100, cents%100) }
 
 func Generate() []Product {
@@ -64,11 +62,11 @@ func Run(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
 		return counts, err
 	}
 	defer tx.Rollback(context.Background())
-	// Prevent simultaneous seed commands from passing the empty-catalog check.
+
 	if _, err = tx.Exec(ctx, "SELECT pg_advisory_xact_lock(741530021)"); err != nil {
 		return counts, err
 	}
-	// Block concurrent catalog writers for the check and insert transaction.
+
 	if _, err = tx.Exec(ctx, "LOCK TABLE products, sellers IN SHARE ROW EXCLUSIVE MODE"); err != nil {
 		return counts, err
 	}
