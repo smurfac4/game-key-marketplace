@@ -105,7 +105,7 @@ URL state drives store/search filters, sorting and pagination. Search debounces 
 
 ## Repository provenance
 
-The initial Git timeline groups pre-existing workspace files into reconstructed stages with assigned dates at the owner's request. Those timestamps are not an authentic original development log; commit bodies disclose the reconstruction. Later changes are normal commits. The complete historical decision record remains available rather than presenting old scaffold limitations as current behavior.
+Early commits group files that already existed in the workspace. Their dates were reassigned at the owner's request and do not represent the original development times; commit messages record this. Later changes use normal commits.
 
 ## Documentation consolidation — 2026-11-14
 
@@ -136,3 +136,7 @@ Six documentation screenshots are real Playwright captures at 1280px width, gene
 ## README gallery and concise setup — 2026-11-14
 
 The screenshot gallery sits immediately below the introduction and links all six full PNGs. Quick start keeps the required configuration and five startup commands; the complete previous section, including credentials/origins guidance, default addresses, smoke requests and seed behavior, is preserved verbatim under docs/DEVELOPMENT.md#docker-setup-details. No live-demo section or hosted-site claim is added. A content-preservation assertion confirmed that the previous setup body remains in the development guide.
+
+## Provenance presentation — 2026-11-14
+
+The history explanation is kept briefly and neutrally in Repository provenance, with one README link to it. This changes documentation only; no commit dates, authors or history are rewritten.

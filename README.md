@@ -118,4 +118,4 @@ Database-dependent Go tests skip unless their separate test database variables a
 - [AI assistance records](ai-logs/README.md): work log and audit reports.
 - [Contribution rules](CLAUDE.md).
 
-Early commits group pre-existing workspace files into a reconstructed development timeline; their assigned timestamps are not an original development log. That provenance is recorded in the commit messages and decision history. Later changes use normal commits.
+[Repository history and provenance](DECISIONS.md#repository-provenance).
