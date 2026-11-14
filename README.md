@@ -4,6 +4,22 @@ An independent game-key marketplace inspired by Eneba, built with React, TypeScr
 
 This is a non-commercial demo and is not affiliated with Eneba or game publishers. Payments, sellers, inventory and rewards are simulated; delivered keys cannot activate games. Game titles are used as catalog references. The artwork and branding are original project assets, not official publisher covers or Eneba assets.
 
+## Screenshots
+
+Captured at 1280px using disposable demo data. Click an image to open the full PNG; [capture details and regeneration](docs/screenshots/README.md).
+
+| Homepage | Store filters |
+| --- | --- |
+| [![Homepage](docs/screenshots/homepage.png)](docs/screenshots/homepage.png) | [![Store filters](docs/screenshots/store-filters.png)](docs/screenshots/store-filters.png) |
+
+| Typo search | Product and sellers |
+| --- | --- |
+| [![Typo-tolerant search](docs/screenshots/typo-search.png)](docs/screenshots/typo-search.png) | [![Product and seller comparison](docs/screenshots/product-sellers.png)](docs/screenshots/product-sellers.png) |
+
+| Checkout | Keys library |
+| --- | --- |
+| [![Mock checkout](docs/screenshots/checkout.png)](docs/screenshots/checkout.png) | [![Demo keys library](docs/screenshots/keys-library.png)](docs/screenshots/keys-library.png) |
+
 ## Features
 
 - Catalog with platform, region, genre and price filters, sorting and shareable URL state.
@@ -17,7 +33,7 @@ This is a non-commercial demo and is not affiliated with Eneba or game publisher
 
 ## Quick start
 
-Requires Docker Engine and Docker Compose v2. Node and Go are not required for the Docker application.
+Requires Docker Engine and Compose v2; host Node/Go installations are not needed.
 
 ```sh
 git clone https://github.com/smurfac4/game-key-marketplace.git
@@ -25,15 +41,7 @@ cd game-key-marketplace
 cp .env.example .env
 ```
 
-Before starting, edit the ignored `.env`:
-
-- Replace `POSTGRES_PASSWORD` with a local development password.
-- Set `JWT_SECRET` to a securely generated random value of at least 32 bytes.
-- Keep the default ports, or change them if they are occupied. If `WEB_PORT` changes, update `AUTH_ALLOWED_ORIGINS` to the exact web origin as well.
-
-Keep these values private. If you already have a `.env`, keep it instead of copying over it. Optional SMTP/OIDC fields can remain empty; email/password registration works without external services.
-
-Start PostgreSQL, apply the schema and seed an empty catalog before starting the application:
+Keep an existing `.env` instead of overwriting it. Set a private `POSTGRES_PASSWORD` and a securely generated `JWT_SECRET` of at least 32 bytes. Optional SMTP/OIDC fields may stay empty. For port changes and detailed setup, see [Docker setup details](docs/DEVELOPMENT.md#docker-setup-details).
 
 ```sh
 docker compose build api web
@@ -43,21 +51,7 @@ docker compose run --rm --no-deps api seed
 docker compose up -d --wait api web
 ```
 
-| Service | Default address |
-| --- | --- |
-| Storefront | http://localhost:5173 |
-| API | http://localhost:8080/api |
-| PostgreSQL | localhost:5432 |
-
-These addresses follow `.env.example`; use your configured ports if different. The web container proxies `/api` to Go.
-
-```sh
-curl --fail http://localhost:5173/api/health/ready
-curl --fail 'http://localhost:5173/api/products?page_size=1'
-curl --fail http://localhost:5173/api/products/demo-game-001
-```
-
-The seed creates 150 regional/platform listings for 50 game titles, 10 sellers, offers and non-redeemable keys, plus homepage banners and sample sales. It refuses to replace a populated catalog. On subsequent starts, skip `seed`.
+Open http://localhost:5173 (or your configured web port). Run `seed` only for an empty catalog; skip it on subsequent starts. [Development and testing](docs/DEVELOPMENT.md) includes service addresses, smoke checks and the complete setup instructions.
 
 ## Try the purchase flow
 

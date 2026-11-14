@@ -4,6 +4,50 @@
 
 The default application setup uses Docker only. Host development requires Node.js 24+, npm, Go 1.26+ and PostgreSQL 17 (or the provided database container).
 
+## Docker setup details
+
+Requires Docker Engine and Docker Compose v2. Node and Go are not required for the Docker application.
+
+```sh
+git clone https://github.com/smurfac4/game-key-marketplace.git
+cd game-key-marketplace
+cp .env.example .env
+```
+
+Before starting, edit the ignored `.env`:
+
+- Replace `POSTGRES_PASSWORD` with a local development password.
+- Set `JWT_SECRET` to a securely generated random value of at least 32 bytes.
+- Keep the default ports, or change them if they are occupied. If `WEB_PORT` changes, update `AUTH_ALLOWED_ORIGINS` to the exact web origin as well.
+
+Keep these values private. If you already have a `.env`, keep it instead of copying over it. Optional SMTP/OIDC fields can remain empty; email/password registration works without external services.
+
+Start PostgreSQL, apply the schema and seed an empty catalog before starting the application:
+
+```sh
+docker compose build api web
+docker compose up -d --wait db
+docker compose run --rm --no-deps api migrate up
+docker compose run --rm --no-deps api seed
+docker compose up -d --wait api web
+```
+
+| Service | Default address |
+| --- | --- |
+| Storefront | http://localhost:5173 |
+| API | http://localhost:8080/api |
+| PostgreSQL | localhost:5432 |
+
+These addresses follow `.env.example`; use your configured ports if different. The web container proxies `/api` to Go.
+
+```sh
+curl --fail http://localhost:5173/api/health/ready
+curl --fail 'http://localhost:5173/api/products?page_size=1'
+curl --fail http://localhost:5173/api/products/demo-game-001
+```
+
+The seed creates 150 regional/platform listings for 50 game titles, 10 sellers, offers and non-redeemable keys, plus homepage banners and sample sales. It refuses to replace a populated catalog. On subsequent starts, skip `seed`.
+
 ## Host development
 
 Create and configure `.env` as described in README, then install frontend dependencies and start PostgreSQL:
