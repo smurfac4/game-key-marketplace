@@ -9,4 +9,4 @@
 - Use React Router for routing, TanStack Query for server state, chi for HTTP routing, and pgx for PostgreSQL access.
 - Keep secrets out of source control and AI logs. Document environment variables in .env.example.
 - Run npm run build, go test ./..., and go vet ./... (Go commands from /api) before delivering code. Report any checks that could not run.
-- Do not implement marketplace features until requested. Add schema migrations when the first persisted domain model is introduced.
+- Keep implementation within the requested scope. Add a versioned migration for persisted schema changes; run database tests against disposable databases, never the development catalog.
