@@ -4,6 +4,8 @@ An independent game-key marketplace inspired by Eneba, built with React, TypeScr
 
 This is a non-commercial demo and is not affiliated with Eneba or game publishers. Payments, sellers, inventory and rewards are simulated; delivered keys cannot activate games. Game titles are used as catalog references. The artwork and branding are original project assets, not official publisher covers or Eneba assets.
 
+**Public demo:** [keyspace-smurfac4.onrender.com](https://keyspace-smurfac4.onrender.com). Hosted on Render Free; the first visit after idle can take 50 seconds or more. The free database expires **14 December 2026**. [Deployment details and checks](docs/DEPLOYMENT.md).
+
 ## Screenshots
 
 Captured at 1280px using disposable demo data. Click an image to open the full PNG; [capture details and regeneration](docs/screenshots/README.md).

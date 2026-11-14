@@ -92,12 +92,12 @@ URL state drives store/search filters, sorting and pagination. Search debounces 
 
 ## Known limitations
 
-- Compose runs Vite and local HTTP with database TLS disabled; production hosting, HTTPS/HSTS, CSP, security headers and operational hardening are not supplied.
+- Compose remains a local Vite/HTTP setup with database TLS disabled. The separate Render demo has managed public HTTPS and basic response headers; full production CSP/HSTS policy and operational hardening remain outside scope.
 - Keys are plaintext in PostgreSQL and must remain non-redeemable fixtures. Real key encryption and key-management infrastructure are not implemented.
 - Payment is a mock inside a DB transaction; there are no real charges, refunds, wallet funds or reward redemptions.
 - Rate limiting is process-local. Multiple instances require shared limits and an explicit trusted-proxy policy.
 - Expired sessions are cleaned on that user's next login. Expired email challenges/OIDC flows are cleaned by later requests. There is no global periodic cleanup; order idempotency metadata is retained indefinitely.
-- Readiness checks connectivity, not migration compatibility. Apply migrations before starting updated application code.
+- Readiness checks connectivity, not migration compatibility. The Render wrapper applies migrations before opening HTTP; other deployments must apply them explicitly. There is no ongoing schema-version readiness check.
 - Router wiring detects pgx pool capabilities. Explicit dependency construction would make production composition and unit mocking clearer; a broad refactor is deferred.
 - Offset pages and correlated price/popularity calculations are acceptable at demo scale. Historical EXPLAIN samples are not throughput or production-capacity guarantees.
 - Live SMTP/OIDC operation depends on externally configured services. Password reset/change, MFA, all-device logout, automatic alerts and non-OIDC social adapters are not implemented.
@@ -169,7 +169,7 @@ Retained source, migrations, tests, installed dependencies, documentation screen
 
 ## Recorded chat history and language cleanup — 2026-11-14
 
-The earlier export-pending decision is superseded: local primary conversation records matching this repository were found and exported to ai-logs/CHAT-LOG.md. The file includes all 77 user and 184 assistant text messages in those two records through its stated cutoff; it does not claim recovery of messages absent from the local recorder. Assistant commentary and final answers are included; internal reasoning, system/developer instructions, tool traffic and background review-agent records are excluded from the human-facing chat history. Image attachments have explicit markers rather than copied binary data.
+The earlier export-pending decision is superseded: local primary conversation records matching this repository were found and exported to ai-logs/CHAT-LOG.md. The initial export included 77 user and 184 assistant text messages, and later snapshots extend those same records with an explicit new cutoff; it does not claim recovery of messages absent from the local recorder. Assistant commentary and final answers are included; internal reasoning, system/developer instructions, tool traffic and background review-agent records are excluded from the human-facing chat history. Image attachments have explicit markers rather than copied binary data.
 
 At the owner's request, profanity is explicitly replaced with redaction markers. Personal home-directory names and credential/key-like values are sanitized before writing; no raw session export is added to Git. A standard-library checker reports only file/line/category for configured profanity and credential/key patterns across all AI-log Markdown files. This is a reproducible limited pattern check, not a complete secrets or language audit. The dated transcript is a fixed snapshot; future chat messages require a later export rather than invented updates.
 
@@ -180,3 +180,11 @@ Added a dedicated Render Docker image and Blueprint rather than deploying the Vi
 Render Free does not provide the paid pre-deploy command, so the container startup wrapper runs the existing advisory-locked migrations and a new explicit seed -if-empty mode before the server. The empty check runs inside the seed transaction/advisory lock; repeated starts preserve existing rows and purchases. The normal seed refusal remains unchanged. The web runtime is optional through WEB_DIST and does not alter the local API-only Compose setup. Auto-deploy is off so subsequent documentation commits do not trigger unreviewed deployments.
 
 This is a free demo deployment: web instances can sleep, the free PostgreSQL database expires after 30 days, and SMTP/OIDC are not configured by this change. Real payments, key encryption, shared rate limiting and full production hardening remain deferred. Current deployment status and actual checks are recorded in docs/DEPLOYMENT.md; adding configuration alone is not claimed as a successful public deployment.
+
+## Public Render verification — 2026-11-14
+
+Published commit 15d9438 at https://keyspace-smurfac4.onrender.com using one Free Docker web service and one Free PostgreSQL 17 instance in Frankfurt. Render's database page showed Available, external traffic blocked and an expiry of 14 December 2026. The public HTTPS readiness/catalog/details/search/suggestion/home-block/image endpoints returned successful responses. Chrome computer-use checks completed synthetic registration, typo search, seller comparison, cart, declined/successful mock payment, purchased-key confirmation/library and logout; both English and Lithuanian were observed on the live instance.
+
+Separate public HTTPS API checks confirmed Secure/HttpOnly/SameSite=Lax cookie flags without disclosing their values, USD/GBP mock orders, same-request idempotent replay, changed-request 409, no-store on orders/keys and logout revocation. Foreign-Origin mutations were rejected with 403 JSON, guest orders with 401/no-store, and missing API/assets with the appropriate JSON/plain 404. The hosted source remains at the tested deployment commit; the follow-up documentation commit does not require an application redeploy. No local development catalog or credentials were uploaded.
+
+The chat snapshot was refreshed through 2026-11-14T19:57:16.207Z to include this deployment pass (79 recorded user prompts and 196 assistant responses); its declared redactions and source boundaries remain unchanged.

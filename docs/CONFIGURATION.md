@@ -17,6 +17,9 @@ Compose reads the ignored root `.env`. Start from `.env.example`; never commit p
 | `DATABASE_URL` | Required by host Go commands; Compose supplies its internal database address |
 | `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGSSLMODE` | PostgreSQL connection settings; Compose supplies these from the database configuration |
 | `HTTP_ADDR` | Go listen address; default `:8080` outside Compose |
+| `WEB_DIST` | Optional built frontend directory served by Go; the Render image sets `/app/web`. Leave unset for API-only local Compose |
+| `PORT` | Render-supplied public service port; the deployment wrapper maps it to `HTTP_ADDR` |
+| `RENDER_EXTERNAL_URL` | Render-supplied HTTPS origin; the deployment wrapper uses it for browser and optional identity configuration |
 | `API_PROXY_TARGET` | Vite's Go API target; host default `http://localhost:8080`, Compose target `http://api:8080` |
 
 Changing a database password in `.env` does not change the password already stored in an initialized PostgreSQL volume. Keep existing credentials when reusing a volume, or deliberately update PostgreSQL credentials. Do not delete a volume merely to resolve a port conflict.
