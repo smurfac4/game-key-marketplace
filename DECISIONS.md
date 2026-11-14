@@ -140,3 +140,7 @@ The screenshot gallery sits immediately below the introduction and links all six
 ## Provenance presentation — 2026-11-14
 
 The history explanation is kept briefly and neutrally in Repository provenance, with one README link to it. This changes documentation only; no commit dates, authors or history are rewritten.
+
+## Project license — 2026-11-14
+
+Added the requested MIT license with copyright attributed to the GitHub handle smurfac4 for 2026; no full legal name is needed or inferred. README links the license. Third-party dependency licenses and rights in referenced game names remain their respective owners' rights; asset provenance remains documented separately.

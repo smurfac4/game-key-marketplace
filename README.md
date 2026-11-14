@@ -119,3 +119,7 @@ Database-dependent Go tests skip unless their separate test database variables a
 - [Contribution rules](CLAUDE.md).
 
 [Repository history and provenance](DECISIONS.md#repository-provenance).
+
+## License
+
+[MIT](LICENSE) © 2026 smurfac4.
