@@ -10,11 +10,13 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
 import { AccountMenu } from "./AccountMenu";
 import { useCart } from "../hooks/cart";
 import { copy } from "../content/copy";
 import { SearchBox } from "./SearchBox";
 export function Layout() {
+  const { user } = useAuth();
   const settings = preferences();
   const client = useQueryClient();
   function update(
@@ -111,40 +113,42 @@ export function Layout() {
           </div>
           <nav
             aria-label={copy.account}
-            className="flex items-center gap-1 sm:gap-2"
+            className={`flex flex-wrap items-center gap-3 ${user ? "justify-end" : "col-span-2 justify-between sm:col-span-1 sm:justify-end"}`}
           >
-            <Link
-              to="/wishlist"
-              className="button button-ghost px-2"
-              aria-label={copy.favorites}
-            >
-              <Icon name="heart" width="23" />
-            </Link>
-            <Link
-              to="/cart"
-              className="button button-ghost relative"
-              aria-label={`${copy.cart} (${count})`}
-            >
-              <svg
-                aria-hidden
-                width="23"
-                height="23"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Link
+                to="/wishlist"
+                className="button button-ghost px-2"
+                aria-label={copy.favorites}
               >
-                <path
-                  d="M2 3h3l3 13h11l3-10H6M9 20h.01M18 20h.01"
-                  strokeLinecap="round"
-                />
-              </svg>
-              {count > 0 && (
-                <span className="absolute -right-1 -top-1 rounded-full bg-accent px-1.5 text-xs text-page">
-                  {count}
-                </span>
-              )}
-            </Link>
+                <Icon name="heart" width="23" />
+              </Link>
+              <Link
+                to="/cart"
+                className="button button-ghost relative"
+                aria-label={`${copy.cart} (${count})`}
+              >
+                <svg
+                  aria-hidden
+                  width="23"
+                  height="23"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                >
+                  <path
+                    d="M2 3h3l3 13h11l3-10H6M9 20h.01M18 20h.01"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                {count > 0 && (
+                  <span className="absolute -right-1 -top-1 rounded-full bg-accent px-1.5 text-xs text-page">
+                    {count}
+                  </span>
+                )}
+              </Link>
+            </div>
             <AccountMenu />
           </nav>
         </div>

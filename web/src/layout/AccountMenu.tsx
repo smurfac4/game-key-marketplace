@@ -13,6 +13,18 @@ export function AccountMenu() {
   const ref = useRef<HTMLDetailsElement>(null);
   const [error, setError] = useState<unknown>();
   const data = account.data?.data;
+  if (auth.pending) return <Skeleton className="h-11 w-40" />;
+  if (!auth.user)
+    return (
+      <div className="flex items-center gap-2">
+        <Link to="/login" className="button button-secondary px-4">
+          {copy.login}
+        </Link>
+        <Link to="/register" className="button px-4">
+          {copy.signUp}
+        </Link>
+      </div>
+    );
   const entries = [
     {
       to: "/wishlist",
@@ -55,105 +67,88 @@ export function AccountMenu() {
         <span className="hidden sm:inline">{copy.account} ▾</span>
       </summary>
       <div className="account-popover">
-        {auth.user ? (
-          <>
-            <Link to="/account" className="flex min-w-0 items-center gap-3 p-5">
-              <Avatar kind={data?.profile.avatar} className="h-12 w-12" />
-              <span className="min-w-0">
-                <strong className="block truncate text-base">
-                  {data?.profile.display_name || auth.user.email.split("@")[0]}
-                </strong>
-                <span className="block truncate text-sm text-muted">
-                  {auth.user.email}
-                </span>
+        <>
+          <Link to="/account" className="flex min-w-0 items-center gap-3 p-5">
+            <Avatar kind={data?.profile.avatar} className="h-12 w-12" />
+            <span className="min-w-0">
+              <strong className="block truncate text-base">
+                {data?.profile.display_name || auth.user.email.split("@")[0]}
+              </strong>
+              <span className="block truncate text-sm text-muted">
+                {auth.user.email}
               </span>
-            </Link>
-            {account.isPending ? (
-              <div className="px-5 pb-5">
-                <Skeleton className="h-16" />
-              </div>
-            ) : account.isError ? (
-              <div className="px-4 pb-3">
-                <ErrorState
-                  error={account.error}
-                  retry={() => void account.refetch()}
-                />
-              </div>
-            ) : (
-              data && (
-                <Link
-                  to="/account"
-                  className="block border-y border-white/15 p-5 hover:bg-white/5"
-                >
-                  <span className="mb-3 block text-sm font-bold">
-                    {copy.completeProfile} ({data.completion.percent}%)
-                  </span>
-                  <progress
-                    className="account-progress"
-                    value={data.completion.completed}
-                    max={data.completion.total}
-                    aria-label={copy.completeProfile}
-                  />
-                  <span className="mt-2 block text-sm text-muted">
-                    {data.completion.completed} / {data.completion.total}{" "}
-                    {copy.tasksCompleted} →
-                  </span>
-                </Link>
-              )
-            )}
-            <div className="py-2">
-              {entries.map((entry) => (
-                <Link
-                  key={entry.to}
-                  to={entry.to}
-                  className="account-menu-link"
-                >
-                  <Icon name={entry.icon} width="22" />
-                  <span>{entry.label}</span>
-                  {entry.to === "/account/balance" && data ? (
-                    <span className="ml-auto text-success">
-                      <PriceTag
-                        price={data.wallet_balance}
-                        currency={data.currency}
-                      />
-                    </span>
-                  ) : entry.value !== undefined ? (
-                    <span className="ml-auto text-sm text-accent">
-                      {entry.value}
-                    </span>
-                  ) : null}
-                </Link>
-              ))}
-              <button
-                type="button"
-                className="account-menu-link w-full text-left"
-                onClick={() =>
-                  void auth
-                    .signOut()
-                    .then(() => navigate("/"))
-                    .catch(setError)
-                }
-              >
-                <Icon name="logout" width="22" />
-                {copy.logout}
-              </button>
+            </span>
+          </Link>
+          {account.isPending ? (
+            <div className="px-5 pb-5">
+              <Skeleton className="h-16" />
             </div>
-            <p className="border-t border-white/15 px-5 py-3 text-xs text-muted">
-              {copy.demoAccountHelp}
-            </p>
-          </>
-        ) : (
-          <div className="space-y-3 p-6">
-            <h2 className="text-xl font-bold">{copy.yourAccount}</h2>
-            <p className="text-sm text-muted">{copy.authSubtitle}</p>
-            <Link className="button w-full" to="/register">
-              {copy.register}
-            </Link>
-            <Link className="button button-secondary w-full" to="/login">
-              {copy.login}
-            </Link>
+          ) : account.isError ? (
+            <div className="px-4 pb-3">
+              <ErrorState
+                error={account.error}
+                retry={() => void account.refetch()}
+              />
+            </div>
+          ) : (
+            data && (
+              <Link
+                to="/account"
+                className="block border-y border-white/15 p-5 hover:bg-white/5"
+              >
+                <span className="mb-3 block text-sm font-bold">
+                  {copy.completeProfile} ({data.completion.percent}%)
+                </span>
+                <progress
+                  className="account-progress"
+                  value={data.completion.completed}
+                  max={data.completion.total}
+                  aria-label={copy.completeProfile}
+                />
+                <span className="mt-2 block text-sm text-muted">
+                  {data.completion.completed} / {data.completion.total}{" "}
+                  {copy.tasksCompleted} →
+                </span>
+              </Link>
+            )
+          )}
+          <div className="py-2">
+            {entries.map((entry) => (
+              <Link key={entry.to} to={entry.to} className="account-menu-link">
+                <Icon name={entry.icon} width="22" />
+                <span>{entry.label}</span>
+                {entry.to === "/account/balance" && data ? (
+                  <span className="ml-auto text-success">
+                    <PriceTag
+                      price={data.wallet_balance}
+                      currency={data.currency}
+                    />
+                  </span>
+                ) : entry.value !== undefined ? (
+                  <span className="ml-auto text-sm text-accent">
+                    {entry.value}
+                  </span>
+                ) : null}
+              </Link>
+            ))}
+            <button
+              type="button"
+              className="account-menu-link w-full text-left"
+              onClick={() =>
+                void auth
+                  .signOut()
+                  .then(() => navigate("/", { replace: true, flushSync: true }))
+                  .catch(setError)
+              }
+            >
+              <Icon name="logout" width="22" />
+              {copy.logout}
+            </button>
           </div>
-        )}
+          <p className="border-t border-white/15 px-5 py-3 text-xs text-muted">
+            {copy.demoAccountHelp}
+          </p>
+        </>
         {!!error && <ErrorState error={error} />}
       </div>
     </details>

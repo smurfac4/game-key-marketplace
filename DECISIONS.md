@@ -110,3 +110,7 @@ The initial Git timeline groups pre-existing workspace files into reconstructed 
 ## Documentation consolidation — 2026-11-14
 
 README, configuration, API and development instructions were separated from historical audit/work records. Superseded decisions were archived with their original wording; asset provenance now describes the current shipped files. The fresh-source reproduction helper was aligned with the current bundled PNG/SVG artwork and startup order. This is documentation and validation maintenance, with no change to marketplace behavior or development catalog data.
+
+## Visible guest actions after logout — 2026-11-14
+
+The account dropdown previously rendered an avatar for guests and hid login/registration links inside a closed menu. It now renders direct Log in and Sign up links once the session resolves to a guest; the avatar/private menu is rendered only for signed-in users. A loading skeleton avoids presenting guest actions while `/api/me` is pending. Header registration uses a separate localized Sign up label, retaining Create account for the form action. On small screens, guest controls occupy a wrapping full-width row so both actions remain available alongside cart/favorites without horizontal overflow. The logout navigation commits synchronously with replacement history so the protected page cannot race it with an intervening login redirect. Session revocation remains server-backed.
