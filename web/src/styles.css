@@ -293,3 +293,33 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 }
+@layer components {
+  .account-dropdown {
+    @apply relative;
+  }
+  .account-popover {
+    @apply absolute right-0 z-40 mt-3 w-[min(360px,calc(100vw-2rem))] overflow-hidden rounded-card border border-[#8854ed] bg-[#4c1daf] shadow-2xl;
+  }
+  .account-menu-link {
+    @apply flex min-h-12 items-center gap-4 px-5 py-3 text-sm transition hover:bg-white/10;
+  }
+  .account-progress {
+    @apply block h-2 w-full overflow-hidden border-0 bg-white/25;
+    appearance: none;
+  }
+  .account-progress::-webkit-progress-bar {
+    background: #ffffff33;
+  }
+  .account-progress::-webkit-progress-value {
+    background: #ffe600;
+  }
+  .account-progress::-moz-progress-bar {
+    background: #ffe600;
+  }
+  .auth-panel {
+    @apply mx-auto w-full max-w-xl border border-white/10 bg-[#4618a6] p-6 shadow-2xl sm:p-10;
+  }
+  .auth-field {
+    @apply w-full rounded-control border px-3 py-2.5 text-ink min-h-14 border-transparent bg-[#351383] text-base placeholder:text-[#b8a1e5] hover:border-[#9f7cde] focus:border-accent sm:min-h-16;
+  }
+}

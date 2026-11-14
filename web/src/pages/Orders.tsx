@@ -14,7 +14,7 @@ import {
 } from "../components/ui";
 import { preferences } from "../content/preferences";
 import { copy } from "../content/copy";
-function DigitalKey({ value }: { value: string }) {
+export function DigitalKey({ value }: { value: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   return (
     <div className="rounded-control border border-line bg-page p-3">

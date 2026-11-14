@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import type { Product } from "../api/types";
 import { errorText } from "../api/client";
 import { Icon } from "./Icon";
+import { FavoriteButton } from "./FavoriteButton";
 import { preferences } from "../content/preferences";
 import { copy, valueLabel } from "../content/copy";
 export function CoverImage({
@@ -101,53 +102,56 @@ export function PriceTag({
 }
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <Link
-      to={`/products/${product.slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-line/35 bg-surface transition duration-200 hover:-translate-y-1 hover:border-brand hover:shadow-xl motion-reduce:transform-none"
-    >
-      <div className="relative overflow-hidden">
-        <CoverImage
-          src={product.image_url}
-          alt=""
-          loading="lazy"
-          className="aspect-[2/3] w-full object-cover transition duration-300 group-hover:scale-105 motion-reduce:transform-none"
-        />
-        {product.original_price && (
-          <span className="absolute left-2 top-2">
-            <Badge tone="accent">
-              −
-              {Math.round(
-                (1 - Number(product.price) / Number(product.original_price)) *
-                  100,
-              )}
-              %
-            </Badge>
-          </span>
-        )}
-      </div>
-      <div className="flex items-center justify-center gap-1.5 border-t border-white/10 bg-black/25 px-2 py-1.5 text-[11px] font-semibold">
-        <Icon name="desktop" width="13" height="13" />
-        {product.platform}
-      </div>
-      <div className="flex flex-1 flex-col gap-2.5 p-3">
-        <h3 className="line-clamp-2 min-h-10 text-sm font-bold leading-5 ">
-          {product.name} {copy.digitalKey}
-        </h3>
-        <p className="text-xs text-muted">
-          <span className="font-bold uppercase text-success">
-            {valueLabel(product.region)}
-          </span>
-        </p>
-        <div className="mt-auto">
-          <span className="mb-1 block text-xs text-muted">{copy.from}</span>
-          <PriceTag
-            price={product.price}
-            currency={product.currency}
-            original={product.original_price}
+    <div className="relative h-full">
+      <FavoriteButton id={product.id} name={product.name} compact />
+      <Link
+        to={`/products/${product.slug}`}
+        className="group flex h-full flex-col overflow-hidden rounded-card border border-line/35 bg-surface transition duration-200 hover:-translate-y-1 hover:border-brand hover:shadow-xl motion-reduce:transform-none"
+      >
+        <div className="relative overflow-hidden">
+          <CoverImage
+            src={product.image_url}
+            alt=""
+            loading="lazy"
+            className="aspect-[2/3] w-full object-cover transition duration-300 group-hover:scale-105 motion-reduce:transform-none"
           />
+          {product.original_price && (
+            <span className="absolute left-2 top-2">
+              <Badge tone="accent">
+                −
+                {Math.round(
+                  (1 - Number(product.price) / Number(product.original_price)) *
+                    100,
+                )}
+                %
+              </Badge>
+            </span>
+          )}
         </div>
-      </div>
-    </Link>
+        <div className="flex items-center justify-center gap-1.5 border-t border-white/10 bg-black/25 px-2 py-1.5 text-[11px] font-semibold">
+          <Icon name="desktop" width="13" height="13" />
+          {product.platform}
+        </div>
+        <div className="flex flex-1 flex-col gap-2.5 p-3">
+          <h3 className="line-clamp-2 min-h-10 text-sm font-bold leading-5 ">
+            {product.name} {copy.digitalKey}
+          </h3>
+          <p className="text-xs text-muted">
+            <span className="font-bold uppercase text-success">
+              {valueLabel(product.region)}
+            </span>
+          </p>
+          <div className="mt-auto">
+            <span className="mb-1 block text-xs text-muted">{copy.from}</span>
+            <PriceTag
+              price={product.price}
+              currency={product.currency}
+              original={product.original_price}
+            />
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }
 export function ErrorState({

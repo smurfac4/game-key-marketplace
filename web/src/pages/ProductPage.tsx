@@ -13,6 +13,7 @@ import {
   PriceTag,
   Skeleton,
 } from "../components/ui";
+import { FavoriteButton } from "../components/FavoriteButton";
 import { Icon } from "../components/Icon";
 import { copy, valueLabel } from "../content/copy";
 export function ProductPage() {
@@ -84,6 +85,7 @@ export function ProductPage() {
               {p.platform} {copy.digitalKey} · {valueLabel(p.region)}
             </span>
           </h1>
+          <FavoriteButton id={p.id} name={p.name} />
           <h2 className="mb-3 text-lg font-bold">{copy.description}</h2>
           <p className="max-w-3xl whitespace-pre-line leading-relaxed text-muted">
             {p.description}

@@ -164,7 +164,7 @@ test("register, cart quantity, declined payment rollback, checkout, keys, orders
   await expect(
     page.getByText("Your cart is empty", { exact: true }),
   ).toBeVisible();
-  await page.getByText("Account ▾", { exact: true }).click();
+  await page.locator(".account-dropdown summary").click();
   await page.getByRole("button", { name: "Log out", exact: true }).click();
   await page.goto("/orders");
   await expect(page).toHaveURL(/\/login\?next=/);
@@ -455,7 +455,7 @@ for (const mobile of [false, true]) {
     expect(conflict.status()).toBe(409);
     expect((await conflict.json()).error.code).toBe("idempotency_conflict");
     await accessible(page);
-    await tabTo(page.getByText("Account ▾", { exact: true }));
+    await tabTo(page.locator(".account-dropdown summary"));
     await page.keyboard.press("Enter");
     await tabTo(page.getByRole("button", { name: "Log out", exact: true }));
     await page.keyboard.press("Enter");
@@ -690,4 +690,183 @@ test("category menu and sidebar remain interchangeable with history and zero res
     page.getByRole("dialog").getByLabel("Platform", { exact: true }),
   ).toHaveValue("Steam");
   await accessible(page);
+});
+for (const mobile of [false, true]) {
+  test(`account profile favorites rewards and library ${mobile ? "mobile" : "desktop"}`, async ({
+    page,
+    browser,
+  }) => {
+    if (mobile) await page.setViewportSize({ width: 390, height: 844 });
+    await register(page, "/account");
+    await expect(
+      page.getByRole("heading", { name: "My account", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("progressbar", {
+        name: "Complete your profile",
+        exact: true,
+      }),
+    ).toHaveAttribute("value", "2");
+    await page.getByLabel("Display name", { exact: true }).fill("Orbit Player");
+    await page.getByLabel("Country", { exact: true }).selectOption("LT");
+    await page
+      .getByLabel("Preferred platform", { exact: true })
+      .selectOption("Steam");
+    await page.getByRole("radio", { name: "Orbit", exact: true }).check();
+    await page
+      .getByLabel("I want to receive personalized offers", { exact: true })
+      .check();
+    await page
+      .getByRole("button", { name: "Save profile", exact: true })
+      .click();
+    await expect(page.getByRole("status")).toContainText("Changes saved");
+    await expect(
+      page.getByRole("progressbar", {
+        name: "Complete your profile",
+        exact: true,
+      }),
+    ).toHaveAttribute("value", "6");
+    await page.reload();
+    await expect(page.getByLabel("Display name", { exact: true })).toHaveValue(
+      "Orbit Player",
+    );
+    await accessible(page);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBeTruthy();
+    await page.screenshot({
+      path: `test-results/account-${mobile ? "mobile" : "desktop"}.png`,
+      fullPage: true,
+    });
+    await page.locator(".account-dropdown summary").click();
+    await expect(page.locator(".account-popover")).toContainText(
+      "Orbit Player",
+    );
+    await accessible(page);
+    await page.screenshot({
+      path: `test-results/account-menu-${mobile ? "mobile" : "desktop"}.png`,
+    });
+    await page.locator(".account-dropdown summary").press("Escape");
+    await expect(page.locator(".account-popover")).not.toBeVisible();
+    await page.goto("/products/demo-game-001");
+    await page.getByRole("button", { name: /Add to favorites:/ }).click();
+    await expect(
+      page.getByRole("button", { name: /Remove from favorites:/ }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await page.goto("/wishlist");
+    await expect(page.locator("article")).toHaveCount(1);
+    await page
+      .getByRole("button", { name: "Notification settings", exact: true })
+      .click();
+    const modal = page.getByRole("dialog", { name: "Notification settings" });
+    await modal
+      .getByLabel("Save my preference for wishlist alerts", { exact: true })
+      .check();
+    await accessible(page);
+    await modal
+      .getByRole("button", { name: "Save profile", exact: true })
+      .click();
+    await expect(modal).not.toBeVisible();
+    await accessible(page);
+    const isolated = await browser.newContext();
+    const outsider = await isolated.newPage();
+    await outsider.goto("/wishlist");
+    await expect(outsider).toHaveURL(/\/login\?next=/);
+    await isolated.close();
+    await page.goto("/products/demo-game-001");
+    await page
+      .getByRole("button", { name: "Buy this offer", exact: true })
+      .click();
+    await page.getByRole("link", { name: "Checkout", exact: true }).click();
+    await page.getByLabel("Test card number").fill("4242424242424242");
+    await page
+      .getByRole("button", { name: "Pay & reveal keys", exact: true })
+      .click();
+    await expect(page.getByTestId("digital-key")).toHaveCount(1);
+    await page.goto("/library");
+    await expect(page.getByTestId("digital-key")).toHaveCount(1);
+    await accessible(page);
+    await page.goto("/account/rewards");
+    await expect(page.getByText(/One illustrative point/)).toBeVisible();
+    await page.goto("/account/cashback");
+    await expect(page.getByText(/Illustrative cashback is 1%/)).toBeVisible();
+    await page.goto("/account/balance");
+    await expect(page.getByText(/demo wallet has no funds/)).toBeVisible();
+    await accessible(page);
+    await page.goto("/wishlist");
+    await page.getByRole("button", { name: /Remove from favorites:/ }).click();
+    await expect(
+      page.getByRole("heading", { name: "Your next favorite is waiting" }),
+    ).toBeVisible();
+    await page.getByLabel("Language", { exact: true }).selectOption("ru");
+    await expect(
+      page.getByRole("heading", { name: "Избранное", exact: true }),
+    ).toBeVisible();
+    await page.locator(".account-dropdown summary").click();
+    await page.getByRole("button", { name: "Выйти", exact: true }).click();
+    await expect
+      .poll(async () => (await page.request.get("/api/me")).status())
+      .toBe(401);
+  });
+}
+test("email code form and configured provider rendering", async ({ page }) => {
+  await page.route("**/api/auth/methods", (route) =>
+    route.fulfill({
+      json: {
+        data: {
+          password: true,
+          email_code: true,
+          providers: [
+            { name: "Test identity", start_url: "/api/auth/oidc/start" },
+          ],
+        },
+      },
+    }),
+  );
+  await page.route("**/api/auth/email/request", (route) =>
+    route.fulfill({
+      status: 202,
+      json: { data: { challenge_id: "ui-fixture-only" } },
+    }),
+  );
+  await page.route("**/api/auth/email/verify", (route) =>
+    route.fulfill({
+      status: 401,
+      json: {
+        error: { code: "unauthorized", message: "Invalid sign-in code." },
+      },
+    }),
+  );
+  await page.goto("/register");
+  await expect(
+    page.getByRole("link", { name: "Continue with Test identity" }),
+  ).toHaveAttribute("href", "/api/auth/oidc/start?next=%2F");
+  await page.getByLabel("Email address").fill("ui-only@example.invalid");
+  await page
+    .getByRole("button", { name: "Continue with email", exact: true })
+    .click();
+  await expect(page.getByLabel("Sign-in code", { exact: true })).toBeVisible();
+  await page.getByLabel("Sign-in code", { exact: true }).fill("123456");
+  await page
+    .getByRole("button", { name: "Verify and continue", exact: true })
+    .click();
+  await expect(page.getByRole("alert")).toContainText("Invalid sign-in code.");
+  await accessible(page);
+  await page
+    .getByRole("button", { name: "Use email and password", exact: true })
+    .click();
+  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
+  await accessible(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/login");
+  await expect(
+    page.getByRole("button", { name: "Continue with email", exact: true }),
+  ).toBeVisible();
+  await accessible(page);
+  await page.screenshot({
+    path: "test-results/auth-email-mobile.png",
+    fullPage: true,
+  });
 });

@@ -8,6 +8,12 @@ import { Layout } from "./layout/Layout";
 import { Homepage } from "./home/Homepage";
 import { Store } from "./pages/Store";
 import { ProductPage } from "./pages/ProductPage";
+import {
+  AccountPage,
+  AccountValuePage,
+  WishlistPage,
+  KeysLibrary,
+} from "./pages/AccountPages";
 import { AuthPage } from "./pages/AuthPage";
 import { CartPage } from "./pages/CartPage";
 import { CheckoutPage } from "./pages/CheckoutPage";
@@ -60,6 +66,38 @@ const router = createBrowserRouter([
       { path: "/products/:slug", element: <ProductPage /> },
       { path: "/login", element: <AuthPage /> },
       { path: "/register", element: <AuthPage register /> },
+      {
+        path: "/account",
+        element: (
+          <Protected>
+            <AccountPage />
+          </Protected>
+        ),
+      },
+      {
+        path: "/wishlist",
+        element: (
+          <Protected>
+            <WishlistPage />
+          </Protected>
+        ),
+      },
+      {
+        path: "/library",
+        element: (
+          <Protected>
+            <KeysLibrary />
+          </Protected>
+        ),
+      },
+      ...(["balance", "rewards", "cashback"] as const).map((kind) => ({
+        path: `/account/${kind}`,
+        element: (
+          <Protected>
+            <AccountValuePage kind={kind} />
+          </Protected>
+        ),
+      })),
       {
         path: "/cart",
         element: (

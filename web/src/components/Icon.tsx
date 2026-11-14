@@ -1,5 +1,15 @@
 import type { SVGProps } from "react";
 const paths: Record<string, string> = {
+  heart:
+    "M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z",
+  user: "M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-13 14v-2a9 9 0 0 1 18 0v2",
+  wallet: "M20 7H5a2 2 0 0 1 0-4h13v4m2 0v14H5a2 2 0 0 1-2-2V5m17 7h-5v5h5",
+  orders: "M5 3h14v18l-4-2-3 2-3-2-4 2V3Zm4 5h6m-6 4h6",
+  logout: "M9 3H3v18h6m5-14 5 5-5 5m-7-5h14",
+  settings:
+    "M12 3v3m0 12v3M3 12h3m12 0h3M6 6l2 2m8 8 2 2M6 18l2-2M16 8l2-2M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+  gem: "m3 8 4-5h10l4 5-9 13L3 8Zm0 0h18M7 3l5 18 5-18",
+
   game: "M6 8h12l3 11h-4l-3-3h-4l-3 3H3L6 8Zm2 3v4m-2-2h4m6-1h.01M18 14h.01",
   globe:
     "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z",

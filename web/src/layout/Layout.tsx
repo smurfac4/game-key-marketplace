@@ -3,7 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LanguageFlag } from "../components/LanguageFlag";
 import { Categories } from "../components/Categories";
 import { Icon } from "../components/Icon";
-import { useState } from "react";
 import {
   Link,
   NavLink,
@@ -11,13 +10,11 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { AccountMenu } from "./AccountMenu";
 import { useCart } from "../hooks/cart";
 import { copy } from "../content/copy";
 import { SearchBox } from "./SearchBox";
-import { Button, ErrorState } from "../components/ui";
 export function Layout() {
-  const auth = useAuth();
   const settings = preferences();
   const client = useQueryClient();
   function update(
@@ -35,7 +32,6 @@ export function Layout() {
   const cart = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-  const [error, setError] = useState<unknown>();
   const count = cart.data?.data.items.reduce((n, i) => n + i.quantity, 0) ?? 0;
   return (
     <div className="flex min-h-screen flex-col">
@@ -113,7 +109,17 @@ export function Layout() {
             </select>
             <span className="text-[10px] text-muted">{copy.demoFx}</span>
           </div>
-          <nav aria-label={copy.account} className="flex items-center gap-2">
+          <nav
+            aria-label={copy.account}
+            className="flex items-center gap-1 sm:gap-2"
+          >
+            <Link
+              to="/wishlist"
+              className="button button-ghost px-2"
+              aria-label={copy.favorites}
+            >
+              <Icon name="heart" width="23" />
+            </Link>
             <Link
               to="/cart"
               className="button button-ghost relative"
@@ -139,59 +145,7 @@ export function Layout() {
                 </span>
               )}
             </Link>
-            <details
-              className="relative"
-              onClick={(e) => {
-                if ((e.target as HTMLElement).closest("a,button"))
-                  e.currentTarget.open = false;
-              }}
-            >
-              <summary className="button button-secondary list-none">
-                {copy.account} ▾
-              </summary>
-              <div className="absolute right-0 z-30 mt-2 grid min-w-52 gap-1 rounded-control border border-line bg-surface p-2 shadow-xl">
-                {auth.user ? (
-                  <>
-                    <span className="truncate px-3 py-2 text-xs text-muted">
-                      {auth.user.email}
-                    </span>
-                    <Link
-                      className="button button-ghost justify-start"
-                      to="/orders"
-                    >
-                      {copy.orders}
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      className="justify-start"
-                      onClick={() => {
-                        void auth
-                          .signOut()
-                          .then(() => navigate("/"))
-                          .catch(setError);
-                      }}
-                    >
-                      {copy.logout}
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      className="button button-ghost justify-start"
-                      to="/login"
-                    >
-                      {copy.login}
-                    </Link>
-                    <Link
-                      className="button button-ghost justify-start"
-                      to="/register"
-                    >
-                      {copy.register}
-                    </Link>
-                  </>
-                )}
-              </div>
-            </details>
+            <AccountMenu />
           </nav>
         </div>
         <nav aria-label={copy.menu} className="main-nav">
@@ -238,11 +192,6 @@ export function Layout() {
         </nav>
       </header>
       <main id="main-content" className="flex-1">
-        {!!error && (
-          <div className="container-page">
-            <ErrorState error={error} />
-          </div>
-        )}
         <Outlet />
       </main>
       <footer className="mt-12 border-t border-line/30 bg-surface">

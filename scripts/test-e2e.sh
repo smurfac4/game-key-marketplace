@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+export AUTH_WEB_URL= SMTP_ADDR= SMTP_USER= SMTP_PASSWORD= SMTP_FROM= OIDC_ISSUER= OIDC_CLIENT_ID= OIDC_CLIENT_SECRET= OIDC_REDIRECT_URL= OIDC_PROVIDER_NAME=
 export POSTGRES_USER=marketplace POSTGRES_PASSWORD=e2e-local-only POSTGRES_DB=marketplace
 export POSTGRES_PORT=15432 API_PORT=18080 WEB_PORT=15173
 export COOKIE_SECURE=false COOKIE_SAMESITE=lax AUTH_ALLOWED_ORIGINS=http://localhost:5173
@@ -21,10 +22,13 @@ run_browser() {
     mcr.microsoft.com/playwright:v1.58.2-noble npx playwright test "$@"
 }
 if [[ $# -eq 0 ]]; then
-  run_browser --grep-invert 'complete keyboard purchase' --output=test-results/main
+  run_browser --grep-invert 'complete keyboard purchase|account profile|email code form' --output=test-results/main
   "${compose[@]}" restart api
   "${compose[@]}" up -d --wait api
   run_browser --grep 'complete keyboard purchase' --output=test-results/keyboard
+  "${compose[@]}" restart api
+  "${compose[@]}" up -d --wait api
+  run_browser --grep 'account profile|email code form' --output=test-results/account
 else
   run_browser "$@"
 fi

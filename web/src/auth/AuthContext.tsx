@@ -10,6 +10,7 @@ type AuthValue = {
   error: unknown;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  acceptSession: (user: User) => void;
 };
 const AuthContext = createContext<AuthValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -38,8 +39,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: "POST",
       body: json({ email, password }),
     });
+    acceptSession(result.data);
+  }
+  function acceptSession(user: User) {
     client.removeQueries({ predicate: (q) => q.queryKey[0] !== "me" });
-    client.setQueryData(["me"], result.data);
+    client.setQueryData(["me"], user);
   }
   async function signOut() {
     await api("/auth/logout", { method: "POST" });
@@ -54,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: query.error,
         signIn,
         signOut,
+        acceptSession,
       }}
     >
       {children}

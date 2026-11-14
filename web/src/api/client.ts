@@ -21,11 +21,16 @@ export async function api<T>(
   if (!["GET", "HEAD", "OPTIONS"].includes(method))
     headers.set("X-CSRF-Protection", "1");
   if (
-    (method === "GET" || path.startsWith("/cart")) &&
+    (method === "GET" ||
+      path.startsWith("/cart") ||
+      path.startsWith("/account") ||
+      path.startsWith("/wishlist")) &&
     (path.startsWith("/products") ||
       path.startsWith("/home/") ||
       path.startsWith("/search/suggest") ||
-      path.startsWith("/cart"))
+      path.startsWith("/cart") ||
+      path.startsWith("/account") ||
+      path.startsWith("/wishlist"))
   )
     headers.set("X-Display-Currency", preferences().currency);
   const response = await fetch(`/api${path}`, {

@@ -108,3 +108,31 @@ export type Block<T> = {
   data: T[];
 };
 export type Suggestion = Pick<Product, "id" | "name" | "slug" | "image_url">;
+export type Profile = {
+  display_name: string;
+  country_code: string;
+  avatar: string;
+  preferred_platform: string;
+  marketing_opt_in: boolean;
+  wishlist_notifications: boolean;
+};
+export type AccountSummary = {
+  profile: Profile;
+  completion: { completed: number; total: number; percent: number };
+  wishlist_count: number;
+  order_count: number;
+  key_count: number;
+  currency: string;
+  wallet_balance: string;
+  cashback_earned: string;
+  reward_points: number;
+  demo: boolean;
+  platforms: string[];
+  countries: string[];
+};
+export type Favorite = Omit<Product, "price"> & { price: string | null };
+export type AuthMethods = {
+  password: boolean;
+  email_code: boolean;
+  providers: { name: string; start_url: string }[];
+};
