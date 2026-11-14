@@ -208,3 +208,23 @@ func TestSessionLifecycleAndJWT(t *testing.T) {
 		})
 	}
 }
+
+func TestSMTPConfiguration(t *testing.T) {
+	for _, tc := range []struct {
+		name           string
+		env            map[string]string
+		valid, enabled bool
+	}{
+		{"disabled", map[string]string{}, true, false},
+		{"missing auth", map[string]string{"SMTP_ADDR": "mail.example.invalid:587", "SMTP_FROM": "sender@example.invalid"}, false, false},
+		{"bad sender", map[string]string{"SMTP_ADDR": "mail.example.invalid:587", "SMTP_FROM": "Name <sender@example.invalid>", "SMTP_USER": "test", "SMTP_PASSWORD": "fixture-only"}, false, false},
+		{"configured", map[string]string{"SMTP_ADDR": "mail.example.invalid:587", "SMTP_FROM": "sender@example.invalid", "SMTP_USER": "test", "SMTP_PASSWORD": "fixture-only"}, true, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			m, err := NewSMTP(func(k string) string { return tc.env[k] })
+			if (err == nil) != tc.valid || (m != nil) != tc.enabled {
+				t.Fatal("unexpected SMTP configuration result")
+			}
+		})
+	}
+}

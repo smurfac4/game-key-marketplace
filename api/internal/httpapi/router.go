@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"context"
+	"example.com/game-key-marketplace/api/internal/account"
 	"example.com/game-key-marketplace/api/internal/auth"
 	"example.com/game-key-marketplace/api/internal/commerce"
 	"example.com/game-key-marketplace/api/internal/home/banners"
@@ -10,7 +11,9 @@ import (
 	"example.com/game-key-marketplace/api/internal/home/deals"
 	"example.com/game-key-marketplace/api/internal/home/newreleases"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -23,7 +26,7 @@ type Pinger interface {
 
 func NewRouter(db Pinger, catalog ProductLister, authentication *Auth) http.Handler {
 	r := chi.NewRouter()
-	r.Use(middleware.RequestID, middleware.Logger, recoverJSON, requestBudget(12*time.Second), displayCurrency)
+	r.Use(middleware.RequestID, accessLog, recoverJSON, requestBudget(12*time.Second), displayCurrency)
 	if authentication != nil {
 		r.Use(authentication.BrowserSecurity, authentication.ProtectCommerce)
 		r.Post("/api/auth/register", authentication.Register)
@@ -31,6 +34,26 @@ func NewRouter(db Pinger, catalog ProductLister, authentication *Auth) http.Hand
 		r.Post("/api/auth/logout", authentication.Logout)
 		r.With(authentication.Require).Get("/api/me", authentication.Me)
 		if pool, ok := db.(*pgxpool.Pool); ok {
+			mailer, mailErr := auth.NewSMTP(os.Getenv)
+			if mailErr != nil {
+				mailer = nil
+				slog.Warn("Email sign-in disabled: invalid SMTP configuration")
+			}
+			identity := NewIdentity(authentication, auth.Passwordless{DB: pool, Service: authentication.Service, Mailer: mailer})
+			if identity.InitErr {
+				slog.Warn("External sign-in disabled: check OIDC configuration and issuer availability")
+			}
+			r.Get("/api/auth/methods", identity.Methods)
+			r.Post("/api/auth/email/request", identity.Request)
+			r.Post("/api/auth/email/verify", identity.Verify)
+			r.With(limitRequests(auth.NewWindowLimiter(10, time.Minute))).Get("/api/auth/oidc/start", identity.Start)
+			r.Get("/api/auth/oidc/callback", identity.Callback)
+			accountHandler := Account{Repo: account.Repository{DB: pool}}
+			r.With(authentication.Require).Get("/api/account", accountHandler.Get)
+			r.With(authentication.Require).Patch("/api/account", accountHandler.Update)
+			r.With(authentication.Require).Get("/api/wishlist", accountHandler.Wishlist)
+			r.With(authentication.Require).Put("/api/wishlist/{id}", accountHandler.Favorite)
+			r.With(authentication.Require).Delete("/api/wishlist/{id}", accountHandler.Favorite)
 			cart := Commerce{Repo: commerce.Repository{DB: pool, Payments: commerce.MockPayment{}}}
 			r.With(authentication.Require).Get("/api/cart", cart.Cart)
 			r.With(authentication.Require).Post("/api/cart/items", cart.Add)

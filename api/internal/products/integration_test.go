@@ -52,6 +52,9 @@ func TestListIntegration(t *testing.T) {
 			t.Fatal(err)
 		}
 		if err := migrations.Run(url, "down"); err != nil {
+			t.Fatal(err)
+		}
+		if err := migrations.Run(url, "down"); err != nil {
 			t.Error(err)
 		}
 	}()

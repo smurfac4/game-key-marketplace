@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-areas='seed products auth home commerce meta restore'
+export AUTH_WEB_URL= SMTP_ADDR= SMTP_USER= SMTP_PASSWORD= SMTP_FROM= OIDC_ISSUER= OIDC_CLIENT_ID= OIDC_CLIENT_SECRET= OIDC_REDIRECT_URL= OIDC_PROVIDER_NAME=
+areas='seed products auth home commerce account meta restore'
 cleanup(){ for area in $areas;do docker compose exec -T db dropdb -U marketplace --if-exists "eneba_final_${area}_test" >/dev/null;done; }
 trap cleanup EXIT
 for area in $areas;do docker compose exec -T db createdb -U marketplace "eneba_final_${area}_test";done
@@ -10,6 +11,7 @@ export TEST_DATABASE_URL='postgres://marketplace:local-development-only@localhos
 export TEST_PRODUCTS_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_products_test?sslmode=disable'
 export TEST_AUTH_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_auth_test?sslmode=disable'
 export TEST_HOME_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_home_test?sslmode=disable'
+export TEST_ACCOUNT_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_account_test?sslmode=disable'
 export TEST_COMMERCE_DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_commerce_test?sslmode=disable'
 (cd api && go test -race ./... -count=1 && go vet ./... && go build -o /private/tmp/eneba-audit-migrate ./cmd/migrate && go build -o /private/tmp/eneba-audit-seed ./cmd/seed)
 export DATABASE_URL='postgres://marketplace:local-development-only@localhost:5432/eneba_final_meta_test?sslmode=disable'

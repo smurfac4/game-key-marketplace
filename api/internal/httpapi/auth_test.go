@@ -73,7 +73,7 @@ func TestAuthIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		for i := 0; i < 5; i++ {
+		for i := 0; i < 6; i++ {
 			if err := migrations.Run(url, "down"); err != nil {
 				t.Error(err)
 			}

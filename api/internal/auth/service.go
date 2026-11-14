@@ -94,24 +94,31 @@ func (s *Service) Login(ctx context.Context, c Credentials) (User, string, error
 		_ = bcrypt.CompareHashAndPassword(s.dummyHash, []byte(c.Password))
 		return User{}, "", ErrUnauthorized
 	}
+	if _, costErr := bcrypt.Cost([]byte(account.PasswordHash)); costErr != nil {
+		_ = bcrypt.CompareHashAndPassword(s.dummyHash, []byte(c.Password))
+		return User{}, "", ErrUnauthorized
+	}
 	if bcrypt.CompareHashAndPassword([]byte(account.PasswordHash), []byte(c.Password)) != nil {
 		return User{}, "", ErrUnauthorized
 	}
+	return s.StartSession(ctx, account.User)
+}
+func (s *Service) StartSession(ctx context.Context, user User) (User, string, error) {
 	now := s.now().UTC().Truncate(time.Second)
 	idBytes := make([]byte, 32)
-	if _, err = rand.Read(idBytes); err != nil {
+	if _, err := rand.Read(idBytes); err != nil {
 		return User{}, "", err
 	}
 	id := hex.EncodeToString(idBytes)
-	claims := jwt.RegisteredClaims{Issuer: "marketplace-api", Audience: jwt.ClaimStrings{"marketplace-web"}, Subject: strconv.FormatInt(account.ID, 10), ID: id, IssuedAt: jwt.NewNumericDate(now), ExpiresAt: jwt.NewNumericDate(now.Add(SessionTTL))}
+	claims := jwt.RegisteredClaims{Issuer: "marketplace-api", Audience: jwt.ClaimStrings{"marketplace-web"}, Subject: strconv.FormatInt(user.ID, 10), ID: id, IssuedAt: jwt.NewNumericDate(now), ExpiresAt: jwt.NewNumericDate(now.Add(SessionTTL))}
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(s.Config.Secret)
 	if err != nil {
 		return User{}, "", err
 	}
-	if err = s.Store.CreateSession(ctx, id, account.ID, now.Add(SessionTTL)); err != nil {
+	if err = s.Store.CreateSession(ctx, id, user.ID, now.Add(SessionTTL)); err != nil {
 		return User{}, "", err
 	}
-	return account.User, token, nil
+	return user, token, nil
 }
 func (s *Service) claims(raw string) (*jwt.RegisteredClaims, error) {
 	claims := &jwt.RegisteredClaims{}

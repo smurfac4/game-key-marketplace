@@ -14,7 +14,7 @@ func displayCurrency(next http.Handler) http.Handler {
 				writeError(w, 400, "invalid_query", "unsupported currency", "currency")
 				return
 			}
-			if r.Method == "GET" || strings.HasPrefix(r.URL.Path, "/api/cart") {
+			if r.Method == "GET" || strings.HasPrefix(r.URL.Path, "/api/cart") || r.URL.Path == "/api/account" || strings.HasPrefix(r.URL.Path, "/api/wishlist") {
 				q := r.URL.Query()
 				q.Set("currency", c)
 				r.URL.RawQuery = q.Encode()

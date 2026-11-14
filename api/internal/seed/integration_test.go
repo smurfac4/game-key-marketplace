@@ -54,6 +54,9 @@ func TestDatabaseIntegration(t *testing.T) {
 			t.Fatal(err)
 		}
 		if err := migrations.Run(url, "down"); err != nil {
+			t.Fatal(err)
+		}
+		if err := migrations.Run(url, "down"); err != nil {
 			t.Error(err)
 		}
 	}()
@@ -164,6 +167,9 @@ func TestDatabaseIntegration(t *testing.T) {
 		t.Fatal("valid allocation:", err)
 	}
 	if err := tx.Rollback(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if err := migrations.Run(url, "down"); err != nil {
 		t.Fatal(err)
 	}
 	if err := migrations.Run(url, "down"); err != nil {

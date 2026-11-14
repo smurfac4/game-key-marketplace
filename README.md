@@ -390,3 +390,23 @@ The latest visual revision uses three original generated genre cover illustratio
 The project existed as workspace files before Git commits were recorded. The initial repository history is an honest grouped import of that existing source: configuration, schema/seed, catalog/home modules, auth/commerce API, frontend, then tests/audit documentation. At the owner's request, commit titles and dates were reconstructed as a project-stage timeline for 13 November 2026 under the configured owner's Git identity. The assigned timestamps are not an original development log; reconstructed commit messages explicitly record that provenance. Subsequent development can be committed normally on `main`.
 
 Clone the public repository with `git clone https://github.com/smurfac4/game-key-marketplace.git`, enter the directory, then follow Run with Docker above. Local `.env`, dependencies, builds and test artifacts remain ignored and are not published.
+
+## Account and optional email/OIDC sign-in
+
+The account menu includes a saved profile, favorites, orders and a private keys library. Balance, cashback and points are explicitly illustrative and cannot be spent or withdrawn. Marketing/alert preferences are stored; automatic offer/price-alert emails are not implemented.
+
+Apply the additive migration before starting the updated API against an existing database:
+
+```sh
+docker compose build api web
+docker compose run --rm --no-deps api migrate up
+docker compose up -d --wait api web
+```
+
+Password registration/login works without external services. To enable real email codes, set `SMTP_ADDR` (host:587), `SMTP_USER`, `SMTP_PASSWORD` and `SMTP_FROM` in your ignored environment configuration, then recreate the API container. SMTP must support authenticated STARTTLS with a valid certificate; implicit TLS port 465 and unauthenticated local relays are not supported. Codes expire after ten minutes and five incorrect guesses. The code is sent only by email, never shown in the UI or API response.
+
+For one external OpenID Connect provider, set `OIDC_ISSUER`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_REDIRECT_URL` and optionally `OIDC_PROVIDER_NAME`. Also set `AUTH_WEB_URL` to your exact frontend origin already included in `AUTH_ALLOWED_ORIGINS`. For example, the local default callback is `http://localhost:5173/api/auth/oidc/callback` (use your actual web port). Register that exact GET callback in the provider console. Use an issuer supporting OIDC authorization code, PKCE S256, and a verified email claim; this is not a generic Steam/Discord/Facebook integration. HTTPS is required for non-loopback issuers and for deployed cookies; refer to existing SameSite/Secure settings for cross-domain hosting.
+
+Only enabled methods appear on the login/register screens. Invalid SMTP configuration or failed OIDC discovery disables that method and emits a generic startup warning; inspect API logs without sharing environment values. Provider discovery happens at startup, so recreate the API after correcting settings. No SMTP credentials, provider secrets or actual email deliveries are included in the repository. The protocol is tested against an in-memory mailer and local OIDC issuer; live service setup remains the owner's task.
+
+The new PostgreSQL account/identity integration suite uses `TEST_ACCOUNT_DATABASE_URL` pointing to an empty database ending in `_test`. `bash scripts/final-audit-db.sh` provisions it with the other disposable suites and removes it afterward. `bash scripts/test-e2e.sh` also runs separate account and email-form browser cases after resetting the disposable API's shared proxy-IP rate budget.
