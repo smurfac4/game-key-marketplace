@@ -1,0 +1,38 @@
+{
+  "homepage": {
+    "width": 1280,
+    "height": 1000,
+    "original_bytes": 985360,
+    "optimized_bytes": 938481
+  },
+  "store-filters": {
+    "width": 1280,
+    "height": 1000,
+    "original_bytes": 357387,
+    "optimized_bytes": 340168
+  },
+  "typo-search": {
+    "width": 1280,
+    "height": 1000,
+    "original_bytes": 243882,
+    "optimized_bytes": 235649
+  },
+  "product-sellers": {
+    "width": 1280,
+    "height": 1904,
+    "original_bytes": 430548,
+    "optimized_bytes": 419961
+  },
+  "checkout": {
+    "width": 1280,
+    "height": 1000,
+    "original_bytes": 94821,
+    "optimized_bytes": 94821
+  },
+  "keys-library": {
+    "width": 1280,
+    "height": 1000,
+    "original_bytes": 87022,
+    "optimized_bytes": 87022
+  }
+}
