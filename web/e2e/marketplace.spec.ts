@@ -7,9 +7,28 @@ async function accessible(page: Page) {
   expect(result.violations).toEqual([]);
 }
 const password = "e2e-safe-test-password-123";
+async function guestActions(page: Page, russian = false) {
+  const nav = page.getByRole("banner").getByRole("navigation", {
+    name: russian ? "Аккаунт" : "Account",
+    exact: true,
+  });
+  await expect(
+    nav.getByRole("link", { name: russian ? "Войти" : "Log in", exact: true }),
+  ).toBeVisible();
+  await expect(
+    nav.getByRole("link", {
+      name: russian ? "Регистрация" : "Sign up",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".account-dropdown")).toHaveCount(0);
+  return nav;
+}
+
 async function register(page: Page, next = "/") {
   const email = `e2e-${Date.now()}-${Math.random().toString(16).slice(2)}@example.invalid`;
   await page.goto(`/register?next=${encodeURIComponent(next)}`);
+  await guestActions(page);
   await page.getByLabel("Email address").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByLabel("Confirm password").fill(password);
@@ -166,6 +185,11 @@ test("register, cart quantity, declined payment rollback, checkout, keys, orders
   ).toBeVisible();
   await page.locator(".account-dropdown summary").click();
   await page.getByRole("button", { name: "Log out", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await guestActions(page);
+  await page.reload();
+  await guestActions(page);
+
   await page.goto("/orders");
   await expect(page).toHaveURL(/\/login\?next=/);
   await accessible(page);
@@ -462,6 +486,30 @@ for (const mobile of [false, true]) {
     await expect
       .poll(async () => (await page.request.get("/api/me")).status())
       .toBe(401);
+    await expect(page).toHaveURL(/\/$/);
+    let nav = await guestActions(page);
+    if (mobile) {
+      await page.setViewportSize({ width: 320, height: 740 });
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBeTruthy();
+    }
+    await accessible(page);
+    await page.screenshot({
+      path: `test-results/logout-${mobile ? "mobile" : "desktop"}.png`,
+      fullPage: false,
+    });
+    await tabTo(nav.getByRole("link", { name: "Log in", exact: true }));
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
+    nav = await guestActions(page);
+    await tabTo(nav.getByRole("link", { name: "Sign up", exact: true }));
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/\/register$/);
+    await expect(page.getByLabel("Confirm password")).toBeVisible();
   });
 }
 test("language selector persists and real GBP checkout", async ({ page }) => {
@@ -809,6 +857,7 @@ for (const mobile of [false, true]) {
     await expect
       .poll(async () => (await page.request.get("/api/me")).status())
       .toBe(401);
+    await guestActions(page, true);
   });
 }
 test("email code form and configured provider rendering", async ({ page }) => {
