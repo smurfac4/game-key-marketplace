@@ -12,7 +12,7 @@ This is a non-commercial demo and is not affiliated with Eneba or game publisher
 - Independent homepage blocks for banners, best sellers, deals and new releases.
 - Registration, login, persistent sessions, editable profiles and favorites.
 - Cart, transactional mock checkout, order history and a private keys library.
-- English/Russian interface and EUR/USD/GBP prices and orders, using fixed demo exchange rates.
+- English/Russian/Lithuanian interface and EUR/USD/GBP prices and orders, using fixed demo exchange rates.
 - Optional email-code sign-in and one configurable OpenID Connect provider.
 
 ## Quick start

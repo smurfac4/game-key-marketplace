@@ -74,7 +74,7 @@ export function Layout() {
           <div className="order-4 col-span-2 flex items-center justify-end gap-3 text-xs lg:order-none lg:col-span-1">
             <LanguageFlag language={settings.language} />
             <label className="sr-only" htmlFor="language">
-              Language
+              {copy.language}
             </label>
             <select
               id="language"
@@ -89,9 +89,10 @@ export function Layout() {
             >
               <option value="en">English</option>
               <option value="ru">Русский</option>
+              <option value="lt">Lietuvių</option>
             </select>
             <label className="sr-only" htmlFor="currency">
-              Currency
+              {copy.currency}
             </label>
             <select
               title={copy.fxHelp}

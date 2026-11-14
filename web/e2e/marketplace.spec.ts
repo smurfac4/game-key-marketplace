@@ -45,6 +45,8 @@ test("search, fuzzy hint, keyboard suggestions and URL-backed filters", async ({
   await page.goto("/search?q=cyberpnk");
   await expect(page.getByText(/Did you mean one of these/)).toBeVisible();
   const search = page.getByRole("combobox", { name: "Search games" });
+  await expect(search).toHaveValue("cyberpnk");
+  await expect(page.locator('main input[name="q"]')).toHaveCount(0);
   await search.fill("cyberpunk");
   await expect(
     page.getByRole("listbox").getByRole("option").first(),
@@ -78,6 +80,24 @@ test("search, fuzzy hint, keyboard suggestions and URL-backed filters", async ({
     path: "test-results/store-desktop.png",
     fullPage: true,
   });
+  await page.goto("/store?platform=Steam&q=cyberpnk&page=2&sort=relevance");
+  await expect(search).toHaveValue("cyberpnk");
+  await search.fill("witcer");
+  await search.press("Enter");
+  await expect(page).toHaveURL(/q=witcer/);
+  await expect(page).toHaveURL(/platform=Steam/);
+  await expect(page).not.toHaveURL(/page=2/);
+  await page.goBack();
+  await expect(search).toHaveValue("cyberpnk");
+  await page.goForward();
+  await expect(search).toHaveValue("witcer");
+  await search.fill("");
+  await search.press("Enter");
+  await expect(page).not.toHaveURL(/q=|sort=relevance/);
+  await expect(page).toHaveURL(/platform=Steam/);
+  await expect(search).toHaveValue("");
+  await expect(page.locator('main input[name="q"]')).toHaveCount(0);
+  await expect(page.getByRole("search")).toHaveCount(1);
 });
 test("register, cart quantity, declined payment rollback, checkout, keys, orders and logout", async ({
   page,
@@ -520,7 +540,7 @@ test("language selector persists and real GBP checkout", async ({ page }) => {
   await expect(
     page.getByRole("img", { name: "English language flag", exact: true }),
   ).toBeVisible();
-  await page.getByLabel("Language", { exact: true }).selectOption("ru");
+  await page.locator("#language").selectOption("ru");
   await expect(
     page.getByRole("img", { name: "Russian language flag", exact: true }),
   ).toBeVisible();
@@ -529,7 +549,7 @@ test("language selector persists and real GBP checkout", async ({ page }) => {
   ).toBeVisible();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "ru");
-  await expect(page.getByLabel("Language", { exact: true })).toHaveValue("ru");
+  await expect(page.locator("#language")).toHaveValue("ru");
   await expect(
     page.getByRole("img", { name: "Russian language flag", exact: true }),
   ).toBeVisible();
@@ -542,7 +562,7 @@ test("language selector persists and real GBP checkout", async ({ page }) => {
     page.getByRole("heading", { name: "Страница не найдена", exact: true }),
   ).toBeVisible();
   await page.goto("/store");
-  await page.getByLabel("Language", { exact: true }).selectOption("en");
+  await page.locator("#language").selectOption("en");
   await expect(
     page.getByRole("img", { name: "English language flag", exact: true }),
   ).toBeVisible();
@@ -848,7 +868,7 @@ for (const mobile of [false, true]) {
     await expect(
       page.getByRole("heading", { name: "Your next favorite is waiting" }),
     ).toBeVisible();
-    await page.getByLabel("Language", { exact: true }).selectOption("ru");
+    await page.locator("#language").selectOption("ru");
     await expect(
       page.getByRole("heading", { name: "Избранное", exact: true }),
     ).toBeVisible();
@@ -918,4 +938,129 @@ test("email code form and configured provider rendering", async ({ page }) => {
     path: "test-results/auth-email-mobile.png",
     fullPage: true,
   });
+});
+test("account profile Lithuanian locale and purchase", async ({ page }) => {
+  await register(page, "/account");
+  await page.locator("#language").selectOption("lt");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Mano paskyra", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: "Lithuanian language flag", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Kalba", { exact: true })).toHaveValue("lt");
+  await expect(
+    page.getByLabel("Šalis", { exact: true }).locator('option[value="LT"]'),
+  ).toHaveText("Lietuva");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "lt");
+  await expect(page.locator("#language")).toHaveValue("lt");
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Atraskite naują nuotykį",
+  );
+  await expect(
+    page.getByRole("heading", { name: "Perkamiausi žaidimai", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Naujausi leidimai", exact: true }),
+  ).toBeVisible();
+  await accessible(page);
+  await page.screenshot({
+    path: "test-results/home-lithuanian-desktop.png",
+    fullPage: false,
+  });
+  const search = page.getByRole("combobox", {
+    name: "Ieškoti žaidimų",
+    exact: true,
+  });
+  await search.fill("cyberpnk");
+  await search.press("Enter");
+  await expect(page.getByText(/Gal turėjote omenyje/)).toBeVisible();
+  await expect(search).toHaveValue("cyberpnk");
+  await expect(page.locator('main input[name="q"]')).toHaveCount(0);
+  await expect(page.locator(".product-grid a").first()).toContainText(
+    /\d+,\d{2}/,
+  );
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Filtrai", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Filtrai" });
+  await dialog.getByLabel("Platforma", { exact: true }).selectOption("Steam");
+  await dialog.getByRole("button", { name: "Taikyti", exact: true }).click();
+  await expect(page).toHaveURL(/platform=Steam/);
+  await expect(page).toHaveURL(/q=cyberpnk/);
+  await search.fill("");
+  await search.press("Enter");
+  await expect(page).not.toHaveURL(/q=/);
+  await expect(page).toHaveURL(/platform=Steam/);
+  await accessible(page);
+  await page.screenshot({
+    path: "test-results/store-lithuanian-mobile.png",
+    fullPage: true,
+  });
+  await page.locator(".product-grid a").first().click();
+  await expect(
+    page.getByRole("heading", { name: "Apie žaidimą", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Pirkti šį pasiūlymą", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Krepšelis", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Atsiskaityti", exact: true }).click();
+  await page
+    .getByLabel("Bandomosios kortelės numeris", { exact: true })
+    .fill("4000000000000002");
+  await page
+    .getByRole("button", { name: "Apmokėti ir gauti raktus", exact: true })
+    .click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Bandomasis mokėjimas atmestas",
+  );
+  await page
+    .getByLabel("Bandomosios kortelės numeris", { exact: true })
+    .fill("4242424242424242");
+  await page
+    .getByRole("button", { name: "Apmokėti ir gauti raktus", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Jūsų raktai paruošti",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.getByTestId("digital-key")).toHaveCount(1);
+  await expect(
+    page.getByRole("button", { name: "Kopijuoti raktą", exact: true }),
+  ).toBeVisible();
+  await accessible(page);
+  await page.goto("/orders");
+  await expect(
+    page.getByRole("link", { name: "Peržiūrėti užsakymą", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("main")).toContainText("Apmokėta");
+  await page.goto("/library");
+  await expect(page.getByTestId("digital-key")).toHaveCount(1);
+  await page.locator(".account-dropdown summary").click();
+  await page.getByRole("button", { name: "Atsijungti", exact: true }).click();
+  await expect(
+    page
+      .getByRole("banner")
+      .getByRole("link", { name: "Prisijungti", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByRole("banner")
+      .getByRole("link", { name: "Registruotis", exact: true }),
+  ).toBeVisible();
+  await page.goto("/missing-lithuanian-page");
+  await expect(
+    page.getByRole("heading", { name: "Puslapis nerastas", exact: true }),
+  ).toBeVisible();
+  await page.locator("#language").selectOption("en");
+  await expect(
+    page.getByRole("heading", { name: "Page not found", exact: true }),
+  ).toBeVisible();
 });

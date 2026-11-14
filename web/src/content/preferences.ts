@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 export type Preferences = {
-  language: "en" | "ru";
+  language: "en" | "ru" | "lt";
   currency: "EUR" | "USD" | "GBP";
 };
 const listeners = new Set<() => void>();
@@ -11,7 +11,10 @@ try {
   );
   if (saved && ["EUR", "USD", "GBP"].includes(saved.currency))
     current = {
-      language: saved.language === "ru" ? "ru" : "en",
+      language:
+        saved.language === "ru" || saved.language === "lt"
+          ? saved.language
+          : "en",
       currency: saved.currency,
     };
   localStorage.setItem("keyspace-preferences", JSON.stringify(current));
@@ -39,3 +42,7 @@ export function usePreferences() {
   }, preferences);
 }
 document.documentElement.lang = current.language;
+
+export function locale() {
+  return { en: "en-GB", ru: "ru-RU", lt: "lt-LT" }[current.language];
+}

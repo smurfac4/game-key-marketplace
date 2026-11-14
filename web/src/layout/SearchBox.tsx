@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { Suggestion } from "../api/types";
 import { copy } from "../content/copy";
@@ -18,9 +18,20 @@ function recentSearches(): string[] {
   }
 }
 export function SearchBox() {
+  const location = useLocation();
+  const [params] = useSearchParams();
+  const text =
+    location.pathname === "/store" || location.pathname === "/search"
+      ? (params.get("q") ?? "")
+      : "";
+  return <SearchField key={text} initialText={text} />;
+}
+function SearchField({ initialText }: { initialText: string }) {
   const navigate = useNavigate();
-  const [text, setText] = useState("");
-  const [debounced, setDebounced] = useState("");
+  const location = useLocation();
+  const [params] = useSearchParams();
+  const [text, setText] = useState(initialText);
+  const [debounced, setDebounced] = useState(initialText);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const [recent, setRecent] = useState(recentSearches);
@@ -67,6 +78,23 @@ export function SearchBox() {
     if (option) {
       remember(option.label);
       navigate(option.path);
+    } else if (
+      location.pathname === "/store" ||
+      location.pathname === "/search"
+    ) {
+      const next = new URLSearchParams(params);
+      if (term) {
+        remember(term);
+        next.set("q", term);
+      } else {
+        next.delete("q");
+        if (next.get("sort") === "relevance") next.delete("sort");
+      }
+      next.delete("page");
+      navigate(
+        { pathname: location.pathname, search: next.toString() },
+        { flushSync: true },
+      );
     } else if (term) {
       remember(term);
       navigate(`/search?q=${encodeURIComponent(term)}`);

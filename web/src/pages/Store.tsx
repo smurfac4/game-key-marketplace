@@ -178,26 +178,7 @@ export function Store() {
           </p>
         )}
       </div>
-      <div className="mb-6 flex flex-wrap gap-3">
-        <form
-          className="flex min-w-0 flex-1 gap-2"
-          key={params.get("q")}
-          onSubmit={(e) => {
-            e.preventDefault();
-            change({
-              q: String(new FormData(e.currentTarget).get("q") ?? "").trim(),
-            });
-          }}
-        >
-          <input
-            name="q"
-            aria-label={copy.search}
-            className="field"
-            maxLength={200}
-            defaultValue={params.get("q") ?? ""}
-          />
-          <Button className="shrink-0 whitespace-nowrap">{copy.search}</Button>
-        </form>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <label className="flex items-center gap-2 text-sm">
           <span className="whitespace-nowrap">{copy.sort}</span>
           <select

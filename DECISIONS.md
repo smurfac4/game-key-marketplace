@@ -6,7 +6,7 @@ This document describes the current implementation. The chronological record, in
 
 KEYSPACE is an independent, non-commercial Eneba-inspired marketplace demo. It demonstrates catalog discovery, account management and a complete purchase flow using simulated sellers, offers, payments, stock, keys and rewards. It does not sell or activate games. Game names are referential catalog labels; project artwork is original and is not official game cover art.
 
-The frontend defaults to English and supports Russian. EUR/USD/GBP selection changes quotes and new order currency, not just a currency symbol. Existing orders retain their recorded values. Real payments, seller administration, refunds, taxes, guest carts and production operations remain outside scope.
+The frontend defaults to English and supports Russian and Lithuanian. EUR/USD/GBP selection changes quotes and new order currency, not just a currency symbol. Existing orders retain their recorded values. Real payments, seller administration, refunds, taxes, guest carts and production operations remain outside scope.
 
 ## Monorepo and modular monolith
 
@@ -54,7 +54,7 @@ Product details include sold-out offers and up to eight available same-genre rec
 
 Fixed demo rates are 1 EUR = 1.10 USD = 0.85 GBP. `X-Display-Currency` converts supported source offers before minimum-price selection, bounds and sorting. Direct catalog requests without that header retain original-currency filtering. Checkout independently rereads prices and converts/rounds each unit before multiplication, then stores the selected currency. Mixing source currencies in one cart remains unsupported. Card/currency both participate in idempotency fingerprints.
 
-English/Russian preferences persist in browser storage. Shared catalog links retain query state and can initialize currency. Changing preferences removes non-session query caches and remounts the UI; unfinished form state resets. Interface copy and seed-owned promotional headings translate; catalog names/descriptions keep their source text. Backend-derived prices, products, sellers, banners and block titles are not hardcoded into components.
+English/Russian/Lithuanian preferences persist in browser storage. Shared catalog links retain query state and can initialize currency. Changing preferences removes non-session query caches and remounts the UI; unfinished form state resets. Interface copy and seed-owned promotional headings translate; catalog names/descriptions keep their source text. Backend-derived prices, products, sellers, banners and block titles are not hardcoded into components.
 
 ## Authentication and account data
 
@@ -120,3 +120,11 @@ The account dropdown previously rendered an avatar for guests and hid login/regi
 ## Project positioning — 2026-11-14
 
 The current project is described as an independent Eneba-inspired game-key marketplace. README, current asset documentation, English/Russian interface copy and repository metadata follow that positioning. Original KEYSPACE branding and the lack of Eneba/publisher affiliation remain explicit; payment, inventory, key and reward simulation disclosures remain accurate. Archived work records retain their historical wording and are not current product descriptions.
+
+## One catalog search and Lithuanian — 2026-11-14
+
+The duplicate catalog/search-page form was removed; the header is the single search entry point. Its draft initializes from the catalog URL and remounts when that query changes, keeping direct links and Back/Forward consistent. Submitting a catalog query preserves other filters/sorting and resets the page; submitting an empty query removes q and an obsolete relevance sort. Searching from other pages still opens the global results route, and autocomplete/recent-search navigation remains available.
+
+Lithuanian joins English/Russian as a persisted language, with a project-authored flag and a complete 202-entry interface dictionary checked against the English key set by TypeScript. Country names, money, order dates, known region/genre labels, error messages and seed-owned homepage/banner titles follow the locale. API-owned translations preserve unknown/custom titles as source content, and catalog game names/descriptions stay in their original language. Homepage localization shares a small title helper across blocks rather than introducing a translation service or rewriting catalog rows.
+
+Validation: the full Go race/PostgreSQL/vet runner passed, including locale fallback/cache-variation tests; all fifteen Chromium scenarios passed with Axe checks. Search regression checks direct URLs, preservation of platform filters, pagination reset, Back/Forward and an empty query removing relevance. The Lithuanian scenario covers language persistence, country labels, translated API content, mobile filters, decimal-comma prices, declined/successful checkout, key display, orders/library and logout. Build/lint/format checks passed, screenshots were inspected, and read-only smoke checks passed on the updated local application. No schema or development catalog refresh was needed.

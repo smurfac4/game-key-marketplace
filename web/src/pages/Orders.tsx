@@ -12,7 +12,7 @@ import {
   PriceTag,
   Skeleton,
 } from "../components/ui";
-import { preferences } from "../content/preferences";
+import { locale } from "../content/preferences";
 import { copy } from "../content/copy";
 export function DigitalKey({ value }: { value: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
@@ -98,9 +98,7 @@ export function OrderPage() {
           </h1>
           <p className="text-sm text-muted">
             {copy.order} #{order.id} ·{" "}
-            {new Date(order.created_at).toLocaleString(
-              preferences().language === "ru" ? "ru-RU" : "en-GB",
-            )}
+            {new Date(order.created_at).toLocaleString(locale())}
           </p>
         </div>
         <Badge tone="success">
@@ -174,10 +172,8 @@ export function OrderHistory() {
                     {copy.order} #{order.id}
                   </h2>
                   <p className="mt-1 text-sm text-muted">
-                    {new Date(order.created_at).toLocaleDateString(
-                      preferences().language === "ru" ? "ru-RU" : "en-GB",
-                    )}{" "}
-                    · {order.status}
+                    {new Date(order.created_at).toLocaleDateString(locale())} ·{" "}
+                    {order.status === "paid" ? copy.paid : order.status}
                   </p>
                   <p className="mt-2 max-w-xl text-sm">
                     {order.items.map((i) => i.product_name).join(", ")}

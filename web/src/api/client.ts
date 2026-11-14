@@ -1,4 +1,5 @@
 import { preferences } from "../content/preferences";
+import { lithuanianErrors } from "../content/lt";
 import { copy } from "../content/copy";
 export class ApiError extends Error {
   constructor(
@@ -53,6 +54,8 @@ export async function api<T>(
 }
 export const json = (value: unknown) => JSON.stringify(value);
 export function errorText(error: unknown) {
+  if (preferences().language === "lt" && error instanceof ApiError)
+    return lithuanianErrors[error.code] ?? copy.error;
   if (preferences().language === "ru" && error instanceof ApiError) {
     const messages: Record<string, string> = {
       unauthorized: "Войдите в аккаунт или проверьте данные входа.",

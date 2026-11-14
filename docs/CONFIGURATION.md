@@ -39,7 +39,7 @@ Sessions use a host-only httpOnly cookie and expire after 24 hours. Logout revok
 
 ## Language and currency
 
-The header persists English/Russian and EUR/USD/GBP preferences in browser storage. English is the default. Interface copy and seed-owned promotional headings follow the language; catalog game names and descriptions keep their source text.
+The header persists English/Russian/Lithuanian and EUR/USD/GBP preferences in browser storage. English is the default. Interface copy and seed-owned promotional headings follow the language; catalog game names and descriptions keep their source text.
 
 Fixed demonstration rates are **1 EUR = 1.10 USD = 0.85 GBP**. They are not live exchange-rate data. The selected currency changes catalog quotes, cart totals and the currency stored for new orders. Existing orders retain their recorded amounts. Unit prices are converted and rounded on the server before totals are calculated.
 

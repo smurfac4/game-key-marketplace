@@ -11,7 +11,7 @@ import type { Product } from "../api/types";
 import { errorText } from "../api/client";
 import { Icon } from "./Icon";
 import { FavoriteButton } from "./FavoriteButton";
-import { preferences } from "../content/preferences";
+import { locale } from "../content/preferences";
 import { copy, valueLabel } from "../content/copy";
 export function CoverImage({
   src,
@@ -85,7 +85,7 @@ export function PriceTag({
   original?: string | null;
 }) {
   const format = (v: string) =>
-    new Intl.NumberFormat(preferences().language === "ru" ? "ru-RU" : "en-GB", {
+    new Intl.NumberFormat(locale(), {
       style: "currency",
       currency,
     }).format(Number(v));

@@ -79,7 +79,7 @@ Install npm dependencies, then run:
 bash scripts/test-e2e.sh
 ```
 
-The runner builds Docker images and uses a separate `eneba-e2e` Compose project, PostgreSQL volume and configuration. It runs fourteen Chromium scenarios in three batches: general marketplace, keyboard purchases, and account/email forms. The disposable API restarts between batches to reset the shared proxy-IP authentication budget; application rate limits remain unchanged.
+The runner builds Docker images and uses a separate `eneba-e2e` Compose project, PostgreSQL volume and configuration. It runs fifteen Chromium scenarios in three batches: general marketplace, keyboard purchases, and account/email forms. The disposable API restarts between batches to reset the shared proxy-IP authentication budget; application rate limits remain unchanged.
 
 Coverage includes search, filters/history, registration/session restoration, cart changes, declined/successful checkout, ownership, keys, language/currency, favorites, saved profile and mobile layouts. Axe checks are included. Email-form HTTP responses are mocked; the Go integration tests cover real code-consumption and local OIDC protocol behavior. This does not test a live SMTP account or external identity provider.
 

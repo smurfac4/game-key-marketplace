@@ -1,14 +1,29 @@
-export function LanguageFlag({ language }: { language: "en" | "ru" }) {
+import type { Preferences } from "../content/preferences";
+export function LanguageFlag({
+  language,
+}: {
+  language: Preferences["language"];
+}) {
   return (
     <svg
       role="img"
       aria-label={
-        language === "ru" ? "Russian language flag" : "English language flag"
+        {
+          en: "English language flag",
+          ru: "Russian language flag",
+          lt: "Lithuanian language flag",
+        }[language]
       }
       viewBox="0 0 24 16"
       className="h-4 w-6 shrink-0 rounded-sm ring-1 ring-white/25"
     >
-      {language === "ru" ? (
+      {language === "lt" ? (
+        <>
+          <path fill="#fdb913" d="M0 0h24v16H0z" />
+          <path fill="#006a44" d="M0 5.333h24v5.334H0z" />
+          <path fill="#c1272d" d="M0 10.667h24V16H0z" />
+        </>
+      ) : language === "ru" ? (
         <>
           <path fill="#fff" d="M0 0h24v16H0z" />
           <path fill="#0039a6" d="M0 5.333h24v5.334H0z" />

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -85,12 +84,7 @@ func Serve[T any](w http.ResponseWriter, r *http.Request, fetch func(context.Con
 		return
 	}
 	w.Header().Add("Vary", "Accept-Language")
-	if strings.HasPrefix(r.Header.Get("Accept-Language"), "ru") {
-		titles := map[string]string{"Best sellers": "Лидеры продаж", "Deals worth discovering": "Выгодные предложения", "New releases": "Новые релизы", "Explore the marketplace": "Откройте мир игр"}
-		if v, ok := titles[result.Title]; ok {
-			result.Title = v
-		}
-	}
+	result.Title = LocalizedTitle(result.Title, r.Header.Get("Accept-Language"))
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(result)
 }

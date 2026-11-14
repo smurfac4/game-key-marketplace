@@ -1,5 +1,8 @@
-import { preferences } from "./preferences";
+import { preferences, locale } from "./preferences";
+import { lithuanian } from "./lt";
 const english = {
+  language: "Language",
+  currency: "Currency",
   favorites: "Favorites",
   myAccount: "My account",
   balance: "Balance",
@@ -224,7 +227,14 @@ const english = {
   returnHome: "Return home",
   releaseDate: "Release date",
 } as const;
+export type Translations = {
+  [K in keyof typeof english]: (typeof english)[K] extends readonly string[]
+    ? readonly string[]
+    : string;
+};
 const russian = {
+  language: "Язык",
+  currency: "Валюта",
   favorites: "Избранное",
   myAccount: "Мой аккаунт",
   balance: "Баланс",
@@ -447,14 +457,18 @@ export const copy = new Proxy({} as typeof english, {
   get(_target, key: string) {
     const p = preferences();
     if (key === "cheapGames") {
-      const amount = new Intl.NumberFormat(
-        p.language === "ru" ? "ru-RU" : "en-GB",
-        { style: "currency", currency: p.currency, maximumFractionDigits: 0 },
-      ).format(10);
+      const amount = new Intl.NumberFormat(locale(), {
+        style: "currency",
+        currency: p.currency,
+        maximumFractionDigits: 0,
+      }).format(10);
       return p.language === "ru"
         ? `Игры до ${amount}`
-        : `Games under ${amount}`;
+        : p.language === "lt"
+          ? `Žaidimai iki ${amount}`
+          : `Games under ${amount}`;
     }
+    if (p.language === "lt") return lithuanian[key as keyof typeof lithuanian];
     return p.language === "ru"
       ? (russian[key as keyof typeof russian] ??
           english[key as keyof typeof english])
@@ -473,5 +487,21 @@ export function valueLabel(value: string) {
     Simulation: "Симулятор",
     Racing: "Гонки",
   };
-  return preferences().language === "ru" ? (labels[value] ?? value) : value;
+  const lt: Record<string, string> = {
+    Global: "Visas pasaulis",
+    Europe: "Europa",
+    "North America": "Šiaurės Amerika",
+    Action: "Veiksmo",
+    Adventure: "Nuotykių",
+    RPG: "Vaidmenų",
+    Strategy: "Strategijos",
+    Simulation: "Simuliatoriai",
+    Racing: "Lenktynių",
+  };
+  const language = preferences().language;
+  return language === "ru"
+    ? (labels[value] ?? value)
+    : language === "lt"
+      ? (lt[value] ?? value)
+      : value;
 }
