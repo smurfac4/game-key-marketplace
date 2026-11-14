@@ -56,6 +56,14 @@ func Generate() []Product {
 }
 
 func Run(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
+	return run(ctx, pool, false)
+}
+
+func RunIfEmpty(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
+	return run(ctx, pool, true)
+}
+
+func run(ctx context.Context, pool *pgxpool.Pool, skipExisting bool) (Counts, error) {
 	var counts Counts
 	tx, err := pool.Begin(ctx)
 	if err != nil {
@@ -75,6 +83,9 @@ func Run(ctx context.Context, pool *pgxpool.Pool) (Counts, error) {
 		return counts, err
 	}
 	if populated {
+		if skipExisting {
+			return counts, nil
+		}
 		return counts, errors.New("seed refused: products or sellers already exist; use an empty development database")
 	}
 	sellers := make([]int64, 10)

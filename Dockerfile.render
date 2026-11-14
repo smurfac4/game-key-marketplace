@@ -1,0 +1,24 @@
+FROM node:24-alpine AS web
+WORKDIR /src
+COPY package.json package-lock.json ./
+COPY web/package.json ./web/package.json
+RUN npm ci
+COPY web ./web
+RUN npm run build
+
+FROM golang:1.26-alpine AS api
+WORKDIR /src
+COPY api/go.mod api/go.sum ./
+RUN go mod download
+COPY api ./
+RUN CGO_ENABLED=0 go build -trimpath -o /out/ ./cmd/server ./cmd/migrate ./cmd/seed
+
+FROM alpine:3.23
+RUN apk add --no-cache ca-certificates && adduser -D -u 10001 app
+COPY --from=api /out/ /usr/local/bin/
+COPY --from=web /src/web/dist/ /app/web/
+COPY --chmod=755 scripts/start-render.sh /usr/local/bin/start-render
+ENV WEB_DIST=/app/web COOKIE_SECURE=true COOKIE_SAMESITE=lax
+USER app
+EXPOSE 8080
+CMD ["start-render"]

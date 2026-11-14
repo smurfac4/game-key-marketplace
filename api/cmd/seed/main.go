@@ -20,11 +20,12 @@ func main() {
 	}
 }
 func run() error {
+	ifEmpty := flag.Bool("if-empty", false, "initialize an empty demo catalog; preserve an existing catalog")
 	homepage := flag.Bool("homepage", false, "add homepage fixtures to an existing demo catalog")
 	showcase := flag.Bool("showcase", false, "refresh owned demo artwork and catalog descriptions without resetting purchases")
 	flag.Parse()
-	if *homepage && *showcase {
-		return fmt.Errorf("choose homepage or showcase")
+	if (*homepage && *showcase) || (*ifEmpty && (*homepage || *showcase)) {
+		return fmt.Errorf("choose one of homepage, showcase or if-empty")
 	}
 	if flag.NArg() != 0 {
 		return fmt.Errorf("unexpected arguments")
@@ -50,11 +51,17 @@ func run() error {
 		counts, err = seed.RunShowcase(ctx, pool)
 	} else if *homepage {
 		counts, err = seed.RunHomepage(ctx, pool)
+	} else if *ifEmpty {
+		counts, err = seed.RunIfEmpty(ctx, pool)
 	} else {
 		counts, err = seed.Run(ctx, pool)
 	}
 	if err != nil {
 		return err
+	}
+	if *ifEmpty && counts.Products == 0 {
+		fmt.Println("Catalog already initialized; seed skipped")
+		return nil
 	}
 	fmt.Printf("Seeded %d products, %d sellers, %d offers, %d fake keys; %d banners, %d paid orders\n", counts.Products, counts.Sellers, counts.Offers, counts.Keys, counts.Banners, counts.Orders)
 	return nil

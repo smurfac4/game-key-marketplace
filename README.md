@@ -77,7 +77,7 @@ docker compose run --rm --no-deps api migrate up
 docker compose up -d --wait api web
 ```
 
-Migrations are explicit; the API does not apply them at startup. Do not run the full seed again. To refresh only the recognized demo catalog's names, descriptions and artwork while preserving purchases and inventory, use `docker compose run --rm --no-deps api seed -showcase`. This command is for the seeded demo, not arbitrary catalogs.
+For local Compose, migrations are explicit; the API does not apply them at startup. The separate Render startup wrapper runs migrations before accepting requests (see [deployment](docs/DEPLOYMENT.md)). Do not run the full seed again. To refresh only the recognized demo catalog's names, descriptions and artwork while preserving purchases and inventory, use `docker compose run --rm --no-deps api seed -showcase`. This command is for the seeded demo, not arbitrary catalogs.
 
 `docker compose down` stops the project and keeps its database volume. Adding `-v` deletes that database. Backup instructions and local development commands are in [Development and testing](docs/DEVELOPMENT.md).
 
@@ -90,7 +90,7 @@ Migrations are explicit; the API does not apply them at startup. Do not run the 
 | `api/internal/` | Catalog, auth, account, commerce and homepage modules |
 | `api/migrations/` | Six versioned PostgreSQL migrations, embedded with golang-migrate |
 | `scripts/` | Isolated test and reproduction commands |
-| `ai-logs/` | AI work log, verification record, asset provenance and chat-export placeholder |
+| `ai-logs/` | AI work log, verification record, asset provenance and sanitized chat history |
 
 The backend is a modular monolith: one Go service and one PostgreSQL database, with separate feature packages. Homepage blocks each own their repository and endpoint. Marketplace content comes from the API; interface labels are centralized in the frontend content layer.
 
@@ -112,10 +112,12 @@ Database-dependent Go tests skip unless their separate test database variables a
 
 - [Configuration](docs/CONFIGURATION.md): ports, cookies, languages, currencies, SMTP and OIDC.
 - [API reference](docs/API.md): routes, query parameters, request bodies and errors.
+- [Deployment](docs/DEPLOYMENT.md): free-tier Render Blueprint, runtime and hosting limits.
 - [Development and testing](docs/DEVELOPMENT.md): local tools, disposable databases and backups.
 - [Architecture and decisions](DECISIONS.md): data model, checkout, module boundaries and known limitations.
 - [Assets](ai-logs/ASSETS.md): artwork and branding provenance.
-- [AI assistance records](ai-logs/README.md): five files covering work, verification, assets and the chat export.
+- [Agent chat history (prompts and responses)](ai-logs/CHAT-LOG.md): sanitized Markdown export of the locally recorded project conversations.
+- [AI assistance records](ai-logs/README.md): five files covering work, verification, assets and chat history.
 - [Contribution rules](CLAUDE.md).
 
 [Repository history and provenance](DECISIONS.md#repository-provenance).

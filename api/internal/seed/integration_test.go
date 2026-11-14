@@ -77,7 +77,7 @@ func TestDatabaseIntegration(t *testing.T) {
 	if _, err = pool.Exec(ctx, "DROP TRIGGER reject_seed_key ON game_keys; DROP FUNCTION reject_seed_key()"); err != nil {
 		t.Fatal(err)
 	}
-	counts, err := Run(ctx, pool)
+	counts, err := RunIfEmpty(ctx, pool)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,6 +86,11 @@ func TestDatabaseIntegration(t *testing.T) {
 	}
 	if _, err = Run(ctx, pool); err == nil {
 		t.Fatal("second seed should refuse populated catalog")
+	}
+	for i := 0; i < 2; i++ {
+		if again, err := RunIfEmpty(ctx, pool); err != nil || again != (Counts{}) {
+			t.Fatal("deployment restart must preserve populated catalog", again, err)
+		}
 	}
 	if again, err := RunHomepage(ctx, pool); err != nil || again.Banners != 0 || again.Orders != 0 {
 		t.Fatal("homepage seed must be idempotent", again, err)

@@ -14,6 +14,7 @@ import (
 	"example.com/game-key-marketplace/api/internal/auth"
 	"example.com/game-key-marketplace/api/internal/httpapi"
 	"example.com/game-key-marketplace/api/internal/products"
+	"example.com/game-key-marketplace/api/internal/webui"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -55,8 +56,15 @@ func run() error {
 	if addr == "" {
 		addr = ":8080"
 	}
+	handler := httpapi.NewRouter(pool, products.Repository{DB: pool}, httpapi.NewAuth(authentication))
+	if directory := os.Getenv("WEB_DIST"); directory != "" {
+		handler, err = webui.New(handler, directory)
+		if err != nil {
+			return err
+		}
+	}
 	server := &http.Server{
-		Addr: addr, Handler: httpapi.NewRouter(pool, products.Repository{DB: pool}, httpapi.NewAuth(authentication)),
+		Addr: addr, Handler: handler,
 		ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second,
 		WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second,
 	}
