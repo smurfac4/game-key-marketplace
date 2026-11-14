@@ -90,7 +90,7 @@ Migrations are explicit; the API does not apply them at startup. Do not run the 
 | `api/internal/` | Catalog, auth, account, commerce and homepage modules |
 | `api/migrations/` | Six versioned PostgreSQL migrations, embedded with golang-migrate |
 | `scripts/` | Isolated test and reproduction commands |
-| `ai-logs/` | AI work records, asset provenance and historical audit evidence |
+| `ai-logs/` | AI work log, verification record, asset provenance and chat-export placeholder |
 
 The backend is a modular monolith: one Go service and one PostgreSQL database, with separate feature packages. Homepage blocks each own their repository and endpoint. Marketplace content comes from the API; interface labels are centralized in the frontend content layer.
 
@@ -115,7 +115,7 @@ Database-dependent Go tests skip unless their separate test database variables a
 - [Development and testing](docs/DEVELOPMENT.md): local tools, disposable databases and backups.
 - [Architecture and decisions](DECISIONS.md): data model, checkout, module boundaries and known limitations.
 - [Assets](ai-logs/ASSETS.md): artwork and branding provenance.
-- [AI assistance records](ai-logs/README.md): work log and audit reports.
+- [AI assistance records](ai-logs/README.md): five files covering work, verification, assets and the chat export.
 - [Contribution rules](CLAUDE.md).
 
 [Repository history and provenance](DECISIONS.md#repository-provenance).

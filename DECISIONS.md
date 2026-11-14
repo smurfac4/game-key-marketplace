@@ -1,6 +1,6 @@
 # Architecture and decisions
 
-This document describes the current implementation. The chronological record, including superseded scope and design choices, is preserved in [DECISIONS-HISTORY.md](ai-logs/DECISIONS-HISTORY.md). Setup and API usage belong in [README](README.md) and [docs](docs/DEVELOPMENT.md).
+This document describes the current implementation. A concise implementation history is in [WORKLOG.md](ai-logs/WORKLOG.md); complete earlier scope entries remain in the [pre-cleanup Git snapshot](https://github.com/smurfac4/game-key-marketplace/blob/50ff218/ai-logs/DECISIONS-HISTORY.md). Setup and API usage belong in [README](README.md) and [docs](docs/DEVELOPMENT.md).
 
 ## Scope
 
@@ -156,3 +156,13 @@ A complete verbatim session transcript is not accessible in the current environm
 ## Repository topics — 2026-11-14
 
 Set the requested GitHub topics with gh repo edit: react, typescript, golang, postgresql, marketplace, game-keys and rest-api. gh repo view returned all seven names afterward. This is an explicitly requested repository-metadata update; the seven submission-pass commits are kept local and no Git push is performed pending owner confirmation.
+
+## AI record consolidation — 2026-11-14
+
+Reduced ai-logs to five purpose-specific files: README (guide), WORKLOG (implementation summary), VERIFICATION (checks/results/omissions), ASSETS (provenance) and CHAT-LOG (export placeholder). Replaced overlapping audit/closeout/backend reports and raw SQL output with a clearly dated consolidated verification record. Complete original reports and earlier scope decisions remain in the pinned pre-cleanup Git snapshot, preserving evidence without treating superseded states as current documentation. No transcript or previously unrun verification is invented.
+
+## Obsolete helper and generated output cleanup — 2026-11-14
+
+Removed `scripts/closeout-copy-timeout.sh`, a one-off audit helper with no remaining callers in the current repository. The real timeout test and the reusable database, performance, screenshot and source-reproduction runners remain available. Its original version is preserved in Git history. Removed only ignored generated directories (`web/dist`, `web/test-results`, `web/playwright-report`), totaling 31,429,769 bytes after the build check; normal build/browser commands recreate them.
+
+Retained source, migrations, tests, installed dependencies, documentation screenshots and compatibility SVG media. The SVG paths are still used by browser tests and can be stored in existing catalog rows; deleting them would break supported URLs. No development database or environment file was accessed or changed by this cleanup.
