@@ -1,8 +1,8 @@
-# KEYSPACE — game-key marketplace
+# KEYSPACE — Eneba-inspired game-key marketplace
 
-A full-stack coursework project built with React, TypeScript, Go and PostgreSQL. Browse games, compare sellers, save favorites and complete a simulated purchase to receive demo digital keys.
+An independent game-key marketplace inspired by Eneba, built with React, TypeScript, Go and PostgreSQL. Browse games, compare sellers, save favorites and complete a simulated purchase to receive demo digital keys.
 
-This is an independent, non-commercial project. Payments, sellers, inventory and rewards are simulated; delivered keys cannot activate games. Game titles are used as catalog references. The artwork and branding are original project assets, not official publisher covers or Eneba assets.
+This is a non-commercial demo and is not affiliated with Eneba or game publishers. Payments, sellers, inventory and rewards are simulated; delivered keys cannot activate games. Game titles are used as catalog references. The artwork and branding are original project assets, not official publisher covers or Eneba assets.
 
 ## Features
 

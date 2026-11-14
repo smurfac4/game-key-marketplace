@@ -22,7 +22,7 @@ const english = {
   notifications: "Notification settings",
   wishlistAlerts: "Save my preference for wishlist alerts",
   notificationHelp:
-    "Your preference is saved. Automatic email alerts are not available in this coursework demo.",
+    "Your preference is saved. Automatic email alerts are not enabled.",
   favoriteAdd: "Add to favorites",
   favoriteRemove: "Remove from favorites",
   wishlistEmpty: "Your next favorite is waiting",
@@ -61,7 +61,7 @@ const english = {
   codeInvalid: "Enter the six digits from your email.",
   authFailed: "Sign-in was not completed. Please try again.",
   authDemoNotice:
-    "Independent coursework demo. No real purchases or game activations.",
+    "An independent Eneba-inspired marketplace. No real charges or game activations.",
   showPassword: "Show password",
   hidePassword: "Hide password",
   or: "or",
@@ -81,7 +81,7 @@ const english = {
   brand: "KEYSPACE",
   demo: "DEMO",
   demoBar:
-    "Playable marketplace demo · simulated payments, non-redeemable keys",
+    "Eneba-inspired marketplace · simulated payments, non-redeemable keys",
   categories: "Categories",
   cheapGames: "Games under €10",
   showAll: "View all",
@@ -99,7 +99,7 @@ const english = {
     "Find your demo keys in My orders and try the copy button.",
   ],
   helpNote:
-    "This is an independent assignment demo. Artwork is original demo illustration. Prices, seller ratings and inventory are simulated. Keys cannot activate real games.",
+    "KEYSPACE is an independent marketplace inspired by Eneba, with original artwork and branding. It is not affiliated with Eneba or game publishers. Prices, seller ratings and inventory are simulated. Keys cannot activate real games.",
   shop: "Explore",
   yourAccount: "Your account",
   delivery: "Digital delivery",
@@ -108,7 +108,7 @@ const english = {
   secureHelp: "Prices and stock are verified on the server.",
   selection: "Compare & choose",
   selectionHelp: "See available offers from multiple demo sellers.",
-  brandNote: "Digital games marketplace · assignment demo",
+  brandNote: "Eneba-inspired digital games marketplace",
   home: "Home",
   store: "Store",
   cart: "Cart",
@@ -130,7 +130,8 @@ const english = {
   close: "Close",
   menu: "Navigation",
   skip: "Skip to content",
-  footer: "Independent demo marketplace. All keys and payments are fictional.",
+  footer:
+    "Independent Eneba-inspired marketplace. Simulated payments and non-redeemable keys.",
   browse: "Browse games",
   filters: "Filters",
   apply: "Apply",
@@ -245,7 +246,7 @@ const russian = {
   notifications: "Настройки уведомлений",
   wishlistAlerts: "Сохранить предпочтение об уведомлениях избранного",
   notificationHelp:
-    "Предпочтение сохраняется. Автоматическая отправка уведомлений в учебном демо недоступна.",
+    "Предпочтение сохраняется. Автоматическая отправка уведомлений не включена.",
   favoriteAdd: "Добавить в избранное",
   favoriteRemove: "Убрать из избранного",
   wishlistEmpty: "Ваша следующая любимая игра ждёт",
@@ -285,7 +286,7 @@ const russian = {
   codeInvalid: "Введите шесть цифр из письма.",
   authFailed: "Не удалось завершить вход. Попробуйте ещё раз.",
   authDemoNotice:
-    "Независимый учебный проект. Без реальных покупок и активаций игр.",
+    "Независимый маркетплейс в стиле Eneba. Без реальных списаний и активаций игр.",
   showPassword: "Показать пароль",
   hidePassword: "Скрыть пароль",
   or: "или",
@@ -319,7 +320,7 @@ const russian = {
   close: "Закрыть",
   menu: "Навигация",
   skip: "К содержимому",
-  footer: "Учебный демо-магазин. Ключи и платежи тестовые.",
+  footer: "Маркетплейс в стиле Eneba. Ключи и платежи тестовые.",
   browse: "Смотреть игры",
   filters: "Фильтры",
   apply: "Применить",
@@ -421,7 +422,7 @@ const russian = {
   help: "Как это работает",
   helpIntro: "Полный путь покупки без настоящих списаний.",
   helpNote:
-    "Независимый учебный магазин. Изображения авторские; цены, продавцы и ключи демонстрационные.",
+    "KEYSPACE — независимый маркетплейс в стиле Eneba с авторскими изображениями. Не связан с Eneba и издателями игр. Цены, продавцы и ключи демонстрационные.",
   shop: "Каталог",
   yourAccount: "Ваш аккаунт",
   delivery: "Цифровая доставка",
@@ -430,8 +431,9 @@ const russian = {
   secureHelp: "Цена и наличие проверяются сервером.",
   selection: "Сравните и выберите",
   selectionHelp: "Доступные предложения разных демо-продавцов.",
-  brandNote: "Магазин цифровых игр · учебное демо",
-  demoBar: "Учебный магазин · тестовые платежи и неактивируемые ключи",
+  brandNote: "Магазин цифровых игр в стиле Eneba",
+  demoBar:
+    "Маркетплейс в стиле Eneba · тестовые платежи и неактивируемые ключи",
   demoFx: "Демо-курс",
   fxHelp: "Фиксированные демонстрационные курсы. Оплата в выбранной валюте.",
   helpSteps: [

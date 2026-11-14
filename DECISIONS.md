@@ -4,13 +4,13 @@ This document describes the current implementation. The chronological record, in
 
 ## Scope
 
-KEYSPACE is an independent, non-commercial coursework marketplace. It demonstrates catalog discovery, account management and a complete purchase flow using simulated sellers, offers, payments, stock, keys and rewards. It does not sell or activate games. Game names are referential catalog labels; project artwork is original and is not official game cover art.
+KEYSPACE is an independent, non-commercial Eneba-inspired marketplace demo. It demonstrates catalog discovery, account management and a complete purchase flow using simulated sellers, offers, payments, stock, keys and rewards. It does not sell or activate games. Game names are referential catalog labels; project artwork is original and is not official game cover art.
 
 The frontend defaults to English and supports Russian. EUR/USD/GBP selection changes quotes and new order currency, not just a currency symbol. Existing orders retain their recorded values. Real payments, seller administration, refunds, taxes, guest carts and production operations remain outside scope.
 
 ## Monorepo and modular monolith
 
-An npm workspace contains `web/`; `api/` is a separate Go module. React Router owns navigation, TanStack Query owns server state, chi owns HTTP routing and pgx provides PostgreSQL access. A monorepo task framework and generated shared types are unnecessary for the assignment's size.
+An npm workspace contains `web/`; `api/` is a separate Go module. React Router owns navigation, TanStack Query owns server state, chi owns HTTP routing and pgx provides PostgreSQL access. A monorepo task framework and generated shared types are unnecessary for the project's current size.
 
 The API is one deployed process with one database, organized into catalog, authentication, account, commerce and homepage packages. This is a modular monolith, not a microservice deployment. Homepage `banners`, `bestsellers`, `deals` and `newreleases` packages each own their repository and handler without calling another block. Shared transport types and infrastructure do not remove their shared-database coupling.
 
@@ -116,3 +116,7 @@ README, configuration, API and development instructions were separated from hist
 The account dropdown previously rendered an avatar for guests and hid login/registration links inside a closed menu. It now renders direct Log in and Sign up links once the session resolves to a guest; the avatar/private menu is rendered only for signed-in users. A loading skeleton avoids presenting guest actions while `/api/me` is pending. Header registration uses a separate localized Sign up label, retaining Create account for the form action. On small screens, guest controls occupy a wrapping full-width row so both actions remain available alongside cart/favorites without horizontal overflow. The logout navigation commits synchronously with replacement history so the protected page cannot race it with an intervening login redirect. Session revocation remains server-backed.
 
 `bash scripts/test-e2e.sh` passed all fourteen Chromium cases with Axe checks after adding assertions for guest buttons on first load, immediate logout, reload, English/Russian labels and keyboard navigation to both forms. The keyboard mobile case checks no horizontal overflow at 320px. A regression caught the protected-page redirect race before the synchronous logout navigation fix. Node 24 lint/format/build and Go unit tests/vet passed; unchanged backend integration suites were not separately rerun. Read-only Chromium smoke checks against the updated local web container confirmed visible links at 1280/390/320px and working login/register navigation, without changing development users or catalog data.
+
+## Project positioning — 2026-11-14
+
+The current project is described as an independent Eneba-inspired game-key marketplace. README, current asset documentation, English/Russian interface copy and repository metadata follow that positioning. Original KEYSPACE branding and the lack of Eneba/publisher affiliation remain explicit; payment, inventory, key and reward simulation disclosures remain accurate. Archived work records retain their historical wording and are not current product descriptions.
