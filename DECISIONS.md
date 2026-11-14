@@ -148,3 +148,11 @@ Added the requested MIT license with copyright attributed to the GitHub handle s
 ## E2E override location — 2026-11-14
 
 Moved the image-only override to scripts/docker-compose.e2e.yml and updated the runner and development guide. The root application Compose file remains first in the -f list, preserving relative build/volume resolution; the override contains no relative paths. Shell syntax and quiet Compose configuration validation passed, followed by all fifteen Chromium/Axe scenarios through the relocated runner. Its disposable database/volume were removed on exit; the development catalog was not used.
+
+## Chat export placeholder — 2026-11-14
+
+A complete verbatim session transcript is not accessible in the current environment. ai-logs/CHAT-LOG.md therefore reserves space for the owner's export and explicitly contains no reconstructed prompts/responses. Existing work summaries remain summaries, and the AI records index links the placeholder. Any eventual export must exclude secrets, personal data and real keys before it is committed.
+
+## Repository topics — 2026-11-14
+
+Set the requested GitHub topics with gh repo edit: react, typescript, golang, postgresql, marketplace, game-keys and rest-api. gh repo view returned all seven names afterward. This is an explicitly requested repository-metadata update; the seven submission-pass commits are kept local and no Git push is performed pending owner confirmation.
