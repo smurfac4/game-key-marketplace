@@ -7,7 +7,7 @@ export POSTGRES_PORT=15432 API_PORT=18080 WEB_PORT=15173
 export COOKIE_SECURE=false COOKIE_SAMESITE=lax AUTH_ALLOWED_ORIGINS=http://localhost:5173
 export JWT_SECRET
 JWT_SECRET="$(openssl rand -hex 32)"
-compose=(docker compose -p eneba-e2e -f docker-compose.yml -f docker-compose.e2e.yml)
+compose=(docker compose -p eneba-e2e -f docker-compose.yml -f scripts/docker-compose.e2e.yml)
 cleanup() { "${compose[@]}" down -v --remove-orphans; }
 trap cleanup EXIT
 docker compose build api web

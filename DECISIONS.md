@@ -144,3 +144,7 @@ The history explanation is kept briefly and neutrally in Repository provenance, 
 ## Project license — 2026-11-14
 
 Added the requested MIT license with copyright attributed to the GitHub handle smurfac4 for 2026; no full legal name is needed or inferred. README links the license. Third-party dependency licenses and rights in referenced game names remain their respective owners' rights; asset provenance remains documented separately.
+
+## E2E override location — 2026-11-14
+
+Moved the image-only override to scripts/docker-compose.e2e.yml and updated the runner and development guide. The root application Compose file remains first in the -f list, preserving relative build/volume resolution; the override contains no relative paths. Shell syntax and quiet Compose configuration validation passed, followed by all fifteen Chromium/Axe scenarios through the relocated runner. Its disposable database/volume were removed on exit; the development catalog was not used.
