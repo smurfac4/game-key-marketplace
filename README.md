@@ -1,3 +1,7 @@
+<p align="center"><img src="docs/screenshots/overview.svg" alt="KEYSPACE: discover games, compare sellers and collect demo keys" width="100%"></p>
+
+<p align="center"><a href="https://keyspace-smurfac4.onrender.com">Live demo</a> · <a href="#screenshots">Screenshots</a> · <a href="#quick-start">Quick start</a> · <a href="#documentation">Documentation</a></p>
+
 # KEYSPACE — Eneba-inspired game-key marketplace
 
 An independent game-key marketplace inspired by Eneba, built with React, TypeScript, Go and PostgreSQL. Browse games, compare sellers, save favorites and complete a simulated purchase to receive demo digital keys.
@@ -117,7 +121,6 @@ Database-dependent Go tests skip unless their separate test database variables a
 - [Deployment](docs/DEPLOYMENT.md): free-tier Render Blueprint, runtime and hosting limits.
 - [Development and testing](docs/DEVELOPMENT.md): local tools, disposable databases and backups.
 - [Architecture and decisions](DECISIONS.md): data model, checkout, module boundaries and known limitations.
-- [Assets](ai-logs/ASSETS.md): artwork and branding provenance.
 - [Agent chat history (prompts and responses)](ai-logs/CHAT-LOG.md): sanitized Markdown export of the locally recorded project conversations.
 - [AI assistance records](ai-logs/README.md): five files covering work, verification, assets and chat history.
 - [Contribution rules](CLAUDE.md).
